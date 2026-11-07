@@ -1,0 +1,16 @@
+{
+  "name": "Cane-line",
+  "origin": "Denmark",
+  "founded": 1987,
+  "website": "https://www.cane-line.com",
+  "intro": {
+    "en": "Danish design for life outdoors. Since 1987 Cane-line has made sofas, lounge chairs, dining tables and sunbeds that bring the comfort of the living room into the garden — built for sun, salt and every season.",
+    "el": "Δανέζικος σχεδιασμός για τη ζωή έξω. Από το 1987 η Cane-line δημιουργεί καναπέδες, πολυθρόνες, τραπέζια και ξαπλώστρες που φέρνουν την άνεση του σαλονιού στον κήπο — φτιαγμένα για ήλιο, αλάτι και κάθε εποχή.",
+    "ru": "Датский дизайн для жизни на свежем воздухе. С 1987 года Cane-line создаёт диваны, кресла, обеденные столы и шезлонги, которые переносят комфорт гостиной в сад — для солнца, морского воздуха и любого сезона."
+  },
+  "speciality": {
+    "en": "outdoor living",
+    "el": "έπιπλα εξωτερικού χώρου",
+    "ru": "мебель для улицы"
+  }
+}

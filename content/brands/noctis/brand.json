@@ -1,0 +1,10 @@
+{
+  "name": "Noctis",
+  "website": "https://www.noctis.it/en",
+  "speciality": {
+    "en": "beds",
+    "el": "κρεβάτια",
+    "ru": "кровати"
+  },
+  "origin": "Italy"
+}

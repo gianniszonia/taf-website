@@ -1,0 +1,12 @@
+node_modules/
+site/img/brands/
+site/img/inspiration/
+site/data/catalog.js
+
+# local / OS files
+.claude/settings.local.json
+.env
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini

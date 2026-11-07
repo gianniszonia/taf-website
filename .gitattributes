@@ -1,0 +1,8 @@
+# Normalise line endings in the repository (LF), checkout per platform
+* text=auto
+
+# Binary assets
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary

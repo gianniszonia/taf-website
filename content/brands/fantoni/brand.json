@@ -1,0 +1,10 @@
+{
+  "name": "Fantoni",
+  "website": "https://www.fantoni.it",
+  "speciality": {
+    "en": "office",
+    "el": "έπιπλα γραφείου",
+    "ru": "офисная мебель"
+  },
+  "origin": "Italy"
+}

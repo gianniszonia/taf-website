@@ -1,0 +1,10 @@
+{
+  "name": "Home Cucine",
+  "website": "https://www.homecucine.it",
+  "speciality": {
+    "en": "kitchens",
+    "el": "κουζίνες",
+    "ru": "кухни"
+  },
+  "origin": "Italy"
+}
