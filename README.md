@@ -4,6 +4,8 @@ A simple, elegant website concept for [taf.com.cy](https://taf.com.cy) (Takis An
 English / Ελληνικά / Русский, brands and products, inspiration projects, live showroom opening status,
 and "Book an appointment".
 
+**Live demo:** https://gianniszonia.github.io/taf-website/ (concept — not the official TAF website)
+
 > **Working on this project (human or AI agent)?** Start with [AGENTS.md](AGENTS.md) — architecture, rules,
 > current status — then [content/README.md](content/README.md) (adding content), [docs/design.md](docs/design.md)
 > (design decisions) and [docs/history.md](docs/history.md) (what was tried and what failed).

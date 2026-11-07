@@ -3,9 +3,32 @@
 How to publish this project to GitHub and keep it updated. Written for AI agents (Codex, Claude Code) and humans.
 
 - **Repository:** `https://github.com/gianniszonia/taf-website` (owner: `gianniszonia`)
-- **Visibility:** **private** — brand photos are used without written permission yet (see AGENTS.md). Do not make the
-  repository public, enable GitHub Pages, or share it without the owner explicitly asking.
+- **Live demo (GitHub Pages):** **https://gianniszonia.github.io/taf-website/** — this is the link to share.
+- **Visibility:** **public** (the owner chose GitHub Pages, whose free plan requires a public repo). Brand photos are
+  used without written permission yet, so the page carries `noindex, nofollow` to stay out of search engines.
+  Do not remove that tag, add analytics, or promote the link without the owner asking.
 - **Default branch:** `main`
+
+## How the live site is deployed
+
+`.github/workflows/pages.yml` runs on every push to `main` (and manually via *Actions → Deploy to GitHub Pages →
+Run workflow*): `npm ci` → `npm run build` → uploads `site/` → deploys to Pages. Generated files are therefore
+**not** committed — GitHub builds them. A deploy takes ~2–3 minutes.
+
+```bash
+gh run list --workflow pages.yml --limit 3         # status of recent deploys
+gh run watch <run-id>                              # follow one
+gh run view <run-id> --log-failed                  # why a deploy failed
+curl -sI https://gianniszonia.github.io/taf-website/ | head -1   # expect HTTP/2 200
+```
+
+The site uses relative paths (`css/…`, `img/…`) and hash routes (`#/brand/poliform`), so it works under the
+`/taf-website/` sub-path without any configuration. Keep new asset paths relative (no leading `/`).
+
+Pages settings (already done once): `gh api -X POST repos/gianniszonia/taf-website/pages -f build_type=workflow`.
+
+To take the demo offline: `gh api -X DELETE repos/gianniszonia/taf-website/pages` (and optionally make the repo
+private again: `gh repo edit gianniszonia/taf-website --visibility private --accept-visibility-change-consequences`).
 
 ## What is (and isn't) in the repository
 
@@ -50,6 +73,9 @@ git status                                  # review: no node_modules/, no site/
 git commit -m "Initial commit: TAF website concept"
 gh repo create taf-website --private --source . --remote origin --push \
   --description "Concept website for Takis Angelides Furnihome (TAF), Cyprus"
+# later, for GitHub Pages (owner's decision):
+gh repo edit gianniszonia/taf-website --visibility public --accept-visibility-change-consequences
+gh api -X POST repos/gianniszonia/taf-website/pages -f build_type=workflow
 ```
 
 ## Publishing changes (the normal workflow)
@@ -94,8 +120,7 @@ npm run build
 npm start                                   # http://localhost:5173
 ```
 
-## Hosting the website later (not set up)
+## Other hosting options
 
-The site is static after `npm run build`. Hosting options when the owner wants it: GitHub Pages (needs a build
-workflow, and a public repo or a paid plan for private Pages), Netlify, Vercel, Cloudflare Pages
-(build command `npm run build`, publish directory `site`). Only after brand image permissions are sorted.
+GitHub Pages is the current host. The site is static after `npm run build`, so Netlify, Vercel or Cloudflare Pages
+also work (build command `npm run build`, publish directory `site`) — e.g. if the repo should become private again.

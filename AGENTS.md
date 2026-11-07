@@ -35,11 +35,13 @@ No tests, no bundler, no framework: `site/` is plain HTML/CSS/JS served as-is.
 
 ## Publishing (GitHub)
 
-The project lives in the **private** repo `https://github.com/gianniszonia/taf-website` (branch `main`).
-To publish changes: `npm run build` → `git add -A` → review `git diff --cached --stat` → `git commit -m "…"` →
-`git push`. Only push when the owner asks; never force-push `main`; never make the repo public or enable Pages
-without being asked (brand image rights are not cleared). Generated files (`site/img/brands|inspiration`,
-`site/data/catalog.js`, `node_modules`) are gitignored — rebuild after cloning. Full guide: [docs/publishing.md](docs/publishing.md).
+The project lives in the **public** repo `https://github.com/gianniszonia/taf-website` (branch `main`) and is
+live at **https://gianniszonia.github.io/taf-website/** via GitHub Pages: `.github/workflows/pages.yml` builds and
+deploys `site/` on every push to `main` (~2–3 min). To publish changes: `npm run build` (check it works) →
+`git add -A` → review `git diff --cached --stat` → `git commit -m "…"` → `git push` → `gh run list --workflow pages.yml`.
+Only push when the owner asks; never force-push `main`. The page has `noindex, nofollow` (brand image rights are not
+cleared) — keep it. Generated files (`site/img/brands|inspiration`, `site/data/catalog.js`, `node_modules`) are
+gitignored — GitHub builds them; rebuild locally after cloning. Full guide: [docs/publishing.md](docs/publishing.md).
 
 ## Content model (the important part)
 

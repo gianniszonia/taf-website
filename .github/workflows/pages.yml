@@ -1,0 +1,44 @@
+# Builds the site from content/ and publishes site/ to GitHub Pages on every push to main.
+# Live URL: https://gianniszonia.github.io/taf-website/
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # allow a manual re-deploy from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# one deployment at a time; don't cancel a deployment that is already running
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build # content/ → site/img/{brands,inspiration} + site/data/catalog.js
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
