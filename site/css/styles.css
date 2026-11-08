@@ -513,6 +513,7 @@ dialog[open]::backdrop { animation: fadeIn .5s var(--ease); }
 .nav .collection-panel a::after { display: none; }
 .nav .collection-panel li a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 .nav .collection-panel b { font-weight: 600; }
+.nav .collection-panel .ext { font-size: 11px; color: var(--mute); }
 .menu-only { display: none; }
 
 /* ---------- products page ---------- */

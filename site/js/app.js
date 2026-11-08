@@ -199,36 +199,41 @@
   const allPieces = houses.flatMap((h) => h.products.map((p) => ({ p, h })));
   const pieceCategories = CAT.categories.filter((c) => allPieces.some((x) => x.p.category === c))
     .concat([...new Set(allPieces.map((x) => x.p.category))].filter((c) => !CAT.categories.includes(c)));
-  const matches = (x, b, c) => (!b || x.h.id === b) && (!c || x.p.category === c);
+  // Selections are lists: any chosen brand AND any chosen category ("All" = empty list).
+  const matches = (x, bs, cs) => (!bs.length || bs.includes(x.h.id)) && (!cs.length || cs.includes(x.p.category));
   const countPieces = (b, c) => allPieces.filter((x) => matches(x, b, c)).length;
   const piecesLabel = (n) => {
     const form = new Intl.PluralRules(lang).select(n);
     return t(`products.count.${form}`, { n }) === `products.count.${form}` ? t('products.count.other', { n }) : t(`products.count.${form}`, { n });
   };
+  // URL form: ?c=Sofas,Beds&b=poliform,orme (several values per filter, comma-separated).
+  const listParam = (q, key, valid) => [...new Set((q.get(key) || '').split(',').filter((v) => valid(v)))];
   const productQuery = (q) => ({
-    b: houses.some((h) => h.id === q.get('b')) ? q.get('b') : '',
-    c: pieceCategories.includes(q.get('c')) ? q.get('c') : '',
+    b: listParam(q, 'b', (v) => houses.some((h) => h.id === v)),
+    c: listParam(q, 'c', (v) => pieceCategories.includes(v)),
   });
-  const filterButton = (key, value, label, n, pressed, extra = false) => `<button type="button" class="${extra ? 'pf-extra' : ''}" data-pf-${key}="${esc(value)}" aria-pressed="${pressed}" ${n ? '' : 'disabled'}><span class="pf-label">${label}</span><span class="pf-n">${n}</span></button>`;
+  // Count shown beside an option: pieces it holds within the other filter's current choice ("All" = whole group).
+  const optionCount = (key, value, b, c) => key === 'c' ? countPieces(b, value ? [value] : []) : countPieces(value ? [value] : [], c);
+  const filterButton = (key, value, label, n, pressed, extra = false) => `<button type="button" class="${extra ? 'pf-extra' : ''}" data-pf-${key}="${esc(value)}" aria-pressed="${pressed}" ${n || pressed ? '' : 'disabled'}><span class="pf-label">${label}</span><span class="pf-n">${n}</span></button>`;
   // Lists open with the six largest options (by total pieces); "Show more" reveals the rest. The chosen
-  // option always stays visible. Phones and tablets show every option in their scrolling chip rows.
+  // options always stay visible. Phones and tablets show every option in their scrolling chip rows.
   const PF_VISIBLE = 6;
   const byTotal = (items, count) => [...items].sort((x, y) => count(y) - count(x));
   const filterList = (key, items, value, label, countFor, selected) => {
     const extraCount = Math.max(0, items.length - PF_VISIBLE);
-    return `${filterButton(key, '', t('brand.all'), countFor(''), !selected)}${items.map((x, i) => filterButton(key, value(x), label(x), countFor(value(x)), selected === value(x), i >= PF_VISIBLE)).join('')}
+    return `${filterButton(key, '', t('brand.all'), countFor(''), !selected.length)}${items.map((x, i) => filterButton(key, value(x), label(x), countFor(value(x)), selected.includes(value(x)), i >= PF_VISIBLE)).join('')}
       ${extraCount ? `<button type="button" class="pf-more" data-pf-more aria-expanded="false"><span class="pf-more-label">${t('products.more', { n: extraCount })}</span><span class="pf-less-label">${t('products.less')}</span></button>` : ''}`;
   };
   P.products = (q) => {
     const { b, c } = productQuery(q);
-    const cats = byTotal(pieceCategories, (x) => countPieces('', x)), brands = byTotal(houses, (h) => h.products.length);
+    const cats = byTotal(pieceCategories, (x) => countPieces([], [x])), brands = byTotal(houses, (h) => h.products.length);
     return `<section class="page-heading"><div class="wrap"><h1 class="display">${t('nav.products')}</h1><p class="page-sub">${t('products.sub')}</p></div></section>
     <section class="page-content"><div class="wrap products-layout">
       <aside class="product-filters">
         <div class="pf-group"><h2 class="pf-title" id="pfCat">${t('products.category')}</h2><div class="pf-list" role="group" aria-labelledby="pfCat">
-          ${filterList('c', cats, (x) => x, (x) => cat(x), (x) => countPieces(b, x), c)}</div></div>
+          ${filterList('c', cats, (x) => x, (x) => cat(x), (x) => optionCount('c', x, b, c), c)}</div></div>
         <div class="pf-group"><h2 class="pf-title" id="pfBrand">${t('products.brand')}</h2><div class="pf-list" role="group" aria-labelledby="pfBrand">
-          ${filterList('b', brands, (h) => h.id, (h) => esc(h.name), (x) => countPieces(x, c), b)}</div></div>
+          ${filterList('b', brands, (h) => h.id, (h) => esc(h.name), (x) => optionCount('b', x, b, c), b)}</div></div>
       </aside>
       <div class="products-results"><p class="products-count" id="productsCount" aria-live="polite">${piecesLabel(countPieces(b, c))}</p>
         <div class="products-grid" id="grid">${allPieces.filter((x) => matches(x, b, c)).map((x, i) => card(x.p, x.h, i, 'products')).join('')}</div></div>
@@ -247,12 +252,19 @@
   // Filters update in place (no re-render), so a phone's scrolled chip row keeps its position.
   function filterProducts(key, value) {
     const { parts } = parse(); const q = new URLSearchParams(query);
-    value ? q.set(key, value) : q.delete(key);
+    // Clicking toggles an option; "All" clears that filter.
+    const current = productQuery(q)[key];
+    const next = !value ? [] : current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
+    next.length ? q.set(key, next.join(',')) : q.delete(key);
     const { b, c } = productQuery(q);
-    history.replaceState(history.state, '', `#/${parts.join('/')}${q.toString() ? '?' + q : ''}`);
+    const qs = q.toString().replace(/%2C/gi, ',');
+    history.replaceState(history.state, '', `#/${parts.join('/')}${qs ? '?' + qs : ''}`);
     renderedURL = location.href; renderedHash = routeHash(); query = q;
-    $$('[data-pf-c]').forEach((x) => { const n = countPieces(b, x.dataset.pfC); x.setAttribute('aria-pressed', x.dataset.pfC === c); x.disabled = !n; $('.pf-n', x).textContent = n; });
-    $$('[data-pf-b]').forEach((x) => { const n = countPieces(x.dataset.pfB, c); x.setAttribute('aria-pressed', x.dataset.pfB === b); x.disabled = !n; $('.pf-n', x).textContent = n; });
+    const sync = (key, chosen) => $$(`[data-pf-${key}]`).forEach((x) => {
+      const value = x.dataset[key === 'c' ? 'pfC' : 'pfB'], n = optionCount(key, value, b, c), pressed = value ? chosen.includes(value) : !chosen.length;
+      x.setAttribute('aria-pressed', pressed); x.disabled = !n && !pressed; $('.pf-n', x).textContent = n;
+    });
+    sync('c', c); sync('b', b);
     $('#productsCount').textContent = piecesLabel(countPieces(b, c));
     const grid = $('#grid');
     grid.classList.add('out');
@@ -864,7 +876,7 @@
     // Each list runs down two columns (rows = half its length); brands come first.
     const list = (items) => `<ul style="--rows:${Math.ceil(items.length / 2)}">${items.join('')}</ul>`;
     return `<div class="wrap collection-inner">
-      <div><h2 class="pf-title">${t('nav.houses')}</h2>${list([`<li><a href="#/brands"><b>${t('houses.all')}</b></a></li>`, ...houses.map((h) => `<li><a href="#/brand/${h.id}">${esc(h.name)}</a></li>`)])}</div>
+      <div><h2 class="pf-title">${t('nav.houses')}</h2>${list([`<li><a href="#/brands"><b>${t('houses.all')}</b></a></li>`, ...CAT.brands.map((h) => h.featured ? `<li><a href="#/brand/${h.id}">${esc(h.name)}</a></li>` : h.website ? `<li><a href="${esc(h.website)}" target="_blank" rel="noopener">${esc(h.name)} <span class="ext" aria-hidden="true">↗</span></a></li>` : '').filter(Boolean)])}</div>
       <div><h2 class="pf-title">${t('nav.products')}</h2>${list([`<li><a href="#/products"><b>${t('products.all')}</b></a></li>`, ...pieceCategories.map((c) => `<li><a href="#/products?c=${encodeURIComponent(c)}">${cat(c)}</a></li>`)])}</div>
       <a class="collection-feature" id="collectionFeature" href="#/brands"><img alt="" decoding="async"><span class="cf-caption"><span class="cf-title"></span> <span aria-hidden="true">→</span></span></a>
     </div>`;
