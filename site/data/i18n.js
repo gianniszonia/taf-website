@@ -1,6 +1,7 @@
 /* Interface copy in English, Greek and Russian. One voice: TAF — a Cypriot family business. */
 window.TAF_I18N = {
   en: {
+    'contact.formTitle': 'Or send us a message',
     'collection.new': 'New in {brand}',
     'products.more': 'Show {n} more', 'products.less': 'Show less',
     'nav.collection': 'Collection', 'nav.products': 'Products', 'products.all': 'All products', 'houses.all': 'All brands',
@@ -56,6 +57,7 @@ window.TAF_I18N = {
     'days': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], 'daysShort': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   },
   el: {
+    'contact.formTitle': 'Ή στείλτε μας μήνυμα',
     'collection.new': 'Νέες προτάσεις: {brand}',
     'products.more': '{n} ακόμη', 'products.less': 'Λιγότερα',
     'nav.collection': 'Συλλογή', 'nav.products': 'Προϊόντα', 'products.all': 'Όλα τα προϊόντα', 'houses.all': 'Όλα τα brands',
@@ -111,6 +113,7 @@ window.TAF_I18N = {
     'days': ['Κυριακή', 'Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο'], 'daysShort': ['Κυρ', 'Δευ', 'Τρί', 'Τετ', 'Πέμ', 'Παρ', 'Σάβ'],
   },
   ru: {
+    'contact.formTitle': 'Или напишите нам здесь',
     'collection.new': 'Новинки {brand}',
     'products.more': 'Ещё {n}', 'products.less': 'Свернуть',
     'nav.collection': 'Коллекция', 'nav.products': 'Каталог', 'products.all': 'Весь каталог', 'houses.all': 'Все бренды',

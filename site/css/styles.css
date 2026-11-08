@@ -125,9 +125,9 @@ body.on-hero .header:not(.solid):not(.mega) .logo-dark { opacity: 0; }
 .on-home main > .sec { padding: var(--home-space) 0 0; }
 .on-home main > .statement-sec, .on-home main > .stores-sec { padding-bottom: var(--home-space); }
 /* Optical corrections for text line-spacing, so the visible gaps match. */
-.on-home main > .statement-sec { padding-top: calc(var(--home-space) - 14px); }
-.on-home main > .picks-sec { padding-top: calc(var(--home-space) - 12px); }
-.on-home main > .stores-sec { padding-bottom: calc(var(--home-space) + 14px); }
+.on-home main > .statement-sec { padding-bottom: calc(var(--home-space) - 14px); } /* ends with a link: its box extends below the text */
+.on-home main > .picks-sec, .on-home main > .insp-sec, .on-home main > .stores-sec { padding-top: calc(var(--home-space) - 12px); }
+.on-home main > .stores-sec { padding-bottom: calc(var(--home-space) - 14px); } /* ends with a link, as above */
 
 /* ---------- homepage: statement ---------- */
 .statement { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 1100px; }
@@ -155,7 +155,9 @@ body.on-hero .header:not(.solid):not(.mega) .logo-dark { opacity: 0; }
 .brand-options button { min-height: 40px; font-size: 14px; color: rgba(255,255,255,.66); position: relative; transition: color .3s; }
 .brand-options button:hover, .brand-options button[aria-pressed="true"] { color: #fff; }
 .brand-options button[aria-pressed="true"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: 6px; height: 1px; background: currentColor; }
-.brands-after { display: flex; justify-content: space-between; align-items: center; gap: 20px 40px; flex-wrap: wrap; padding-top: 28px; }
+.brands-after { padding-top: 28px; }
+.brands-swipe { display: none; }
+.swipe-count { display: none; }
 .also { display: flex; align-items: baseline; gap: 10px 28px; flex-wrap: wrap; font-size: 14px; color: var(--ink-2); }
 .also ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 24px; }
 .also li a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
@@ -173,11 +175,12 @@ body.on-hero .header:not(.solid):not(.mega) .logo-dark { opacity: 0; }
 .picks:focus-visible { outline-offset: 6px; }
 .picks .card { min-width: 0; align-self: start; scroll-snap-align: start; }
 .carousel-controls { display: flex; align-items: center; gap: 8px; }
-/* Selected pieces: counter and arrows sit just after the title; All products goes to the far right. */
-.picks-head { align-items: center; }
-/* The serif title is mostly lowercase, so its optical middle sits below its box centre: lower the controls to match. */
-.picks-title .carousel-controls, .picks-head > .link { position: relative; top: calc(clamp(32px, 3.6vw, 54px) * .13); }
-.picks-title { display: flex; align-items: center; flex-wrap: wrap; gap: 12px clamp(28px, 3vw, 48px); }
+/* Selected pieces: the counter and arrows sit at the top right, level with the optical middle of the lowercase title. */
+.picks-sec .head { align-items: center; flex-wrap: nowrap; }
+.picks-sec .carousel-controls { position: relative; top: calc(clamp(32px, 3.6vw, 54px) * .13); flex: 0 0 auto; }
+/* Every section's onward link: after the content, on the left, same size and spacing everywhere. */
+.section-more { margin-top: clamp(32px, 3.6vw, 48px); }
+.section-more .link { font-size: 11.5px; letter-spacing: .18em; }
 .carousel-controls button { width: 48px; height: 48px; border: 1px solid var(--line); border-radius: 50%; transition: border-color .3s, background .3s; }
 .carousel-controls button:hover:not(:disabled) { border-color: var(--ink); }
 .carousel-controls button:disabled { opacity: .3; cursor: default; }
@@ -413,6 +416,7 @@ dialog[open]::backdrop { animation: fadeIn .5s var(--ease); }
 .contact-stores > .link { margin-top: 16px; }
 .contact-book { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font-size: 14.5px; color: var(--ink-2); }
 .contact-form { display: flex; flex-direction: column; gap: 28px; padding-top: 20px; }
+.contact-form-title { margin: 0 0 -8px; }
 .contact-form .f-row { gap: 28px; }
 .contact-form textarea { min-height: 144px; padding: 14px; background: #faf9f6; border: 1px solid var(--line); }
 .contact-form textarea:focus { border-color: var(--ink); }
@@ -619,6 +623,14 @@ dialog[open]::backdrop { animation: fadeIn .5s var(--ease); }
   .piece .pv-body { overflow: visible; }
   .piece.photo[open] { grid-template-rows: 1fr; }
   .piece.photo .pv-img { aspect-ratio: auto; height: 100%; }
+  /* Smaller screens: swipe instead of arrows. Only a small "3 / 56" indicator stays on the photo, and the
+     photo starts below the close button rather than at the very top edge. */
+  .piece[open]:not(.photo) { padding-top: 76px; align-content: start; }
+  .piece:not(.photo) .pv-img { aspect-ratio: auto; background: none; }
+  .piece:not(.photo) .pv-img > img { position: static; height: auto; }
+  .pv-nav { left: 50%; right: auto; bottom: 14px; transform: translateX(-50%); }
+  .pv-nav button { display: none; }
+  .pv-count { min-width: 0; padding: 0 12px; font-size: 10.5px; line-height: 26px; letter-spacing: .14em; border-radius: 13px; background: rgba(10,9,8,.42); text-shadow: none; }
   .f-grid { grid-template-columns: 1fr 1fr; }
   .f-brands { grid-column: 1 / -1; }
 }
@@ -627,22 +639,26 @@ dialog[open]::backdrop { animation: fadeIn .5s var(--ease); }
   .hero h1 { font-size: clamp(38px, 10.5vw, 52px); }
   .statement-line { font-size: clamp(26px, 7.4vw, 34px); }
   .story-numbers span { font-size: 11.5px; }
-  /* Brands: photograph above, names below — no cramped overlay on a phone. */
-  .brands-stage { height: auto; min-height: 0; background: none; color: var(--ink); }
-  .brand-preview { position: relative; }
-  .brand-preview-photo { position: relative; aspect-ratio: 4 / 3; }
-  .brands-overlay { position: static; background: none; }
-  .brands-overlay .wrap { padding-top: 24px; padding-bottom: 0; }
-  .brands-overlay .eyebrow { order: -2; color: var(--mute); margin-bottom: 14px; }
-  .brands-stage { display: flex; flex-direction: column; }
-  .brands-stage .brands-overlay { order: 1; }
-  .brand-name { font-size: 40px; }
-  .brand-preview-caption .sm { color: var(--mute); }
-  .brand-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; border-color: var(--line); padding-top: 0; }
-  .brand-options button { color: var(--ink-2); text-align: left; border-bottom: 1px solid var(--line); min-height: 48px; }
-  .brand-options button:hover, .brand-options button[aria-pressed="true"] { color: var(--ink); }
-  .brand-options button[aria-pressed="true"] { font-weight: 600; }
-  .brand-options button[aria-pressed="true"]::after { display: none; }
+  /* Brands on phones: one large brand photograph with its name, swiped sideways; no list of names. */
+  .brands-stage { display: none; }
+  .brands-swipe { display: block; }
+  .brands-track { display: grid; grid-auto-flow: column; grid-auto-columns: 86%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; padding: 0 var(--pad); scroll-padding: 0 var(--pad); }
+  .brands-track::-webkit-scrollbar { display: none; }
+  /* Inspiration and Showrooms on the homepage: the same sideways rows, with the same card width and peek. */
+  .swipe-count { display: inline; position: relative; top: calc(clamp(32px, 3.6vw, 54px) * .13); flex: 0 0 auto; margin-right: 0; }
+  .on-home .head:has(.swipe-count) { align-items: center; flex-wrap: nowrap; }
+  .on-home .insp-teaser, .on-home .stores { display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 86%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; margin: 0 calc(-1 * var(--pad)); padding: 0 var(--pad); scroll-padding: 0 var(--pad); }
+  .on-home .insp-teaser::-webkit-scrollbar, .on-home .stores::-webkit-scrollbar { display: none; }
+  .on-home .insp-teaser > *, .on-home .stores > * { scroll-snap-align: start; min-width: 0; }
+  .on-home .insp-teaser .tile-photo, .on-home .insp-teaser .house-tile:first-child .tile-photo { aspect-ratio: 4 / 5; }
+  .on-home .stores { border-top: 0; gap: 12px; }
+  .on-home .stores .store, .on-home .stores .store + .store { margin: 0; padding: 24px 0 0; border-top: 1px solid var(--line); }
+  .brand-slide { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; color: #fff; background: var(--paper-2); scroll-snap-align: start; }
+  .brand-slide-photo { position: absolute; inset: 0; }
+  .brand-slide-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .brand-slide::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,9,8,0) 50%, rgba(10,9,8,.62) 100%); }
+  .brand-slide-name { position: absolute; z-index: 2; left: 20px; right: 20px; bottom: 44px; font: 300 34px/1.05 var(--serif); letter-spacing: -.02em; }
+  .brand-slide .sm { position: absolute; z-index: 2; left: 20px; bottom: 20px; color: rgba(255,255,255,.82); }
   .picks { --cards: 1; --gap: 16px; grid-auto-columns: 86%; }
   .insp-teaser, .brand-grid, .grid, .showroom-grid { grid-template-columns: minmax(0, 1fr); }
   .insp-teaser .house-tile:first-child .tile-photo, .grid .card:nth-child(5n+1) .ph { aspect-ratio: 3 / 2; }

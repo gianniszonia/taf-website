@@ -123,9 +123,13 @@
   /* ---------- pages ---------- */
   const P = {};
 
-  // Section heading: one serif title, an optional quiet link on the right.
-  const head = (title, link = '', id = '') => `<div class="head"><h2 class="title"${id ? ` id="${id}"` : ''}>${title}</h2>${link}</div>`;
+  // Section heading: one serif title, with optional controls (e.g. carousel arrows) on the right.
+  const head = (title, controls = '', id = '') => `<div class="head"><h2 class="title"${id ? ` id="${id}"` : ''}>${title}</h2>${controls}</div>`;
   const textLink = (href, label, arrow = '→') => `<a class="link" href="${href}">${label} <span class="arr" aria-hidden="true">${arrow}</span></a>`;
+  // "1 / 3" counter for a homepage row that becomes a swipe carousel on phones (hidden on larger screens).
+  const swipeCount = (track, n) => `<span class="carousel-count swipe-count" data-swipe-count="${track}" aria-live="polite">1 / ${n}</span>`;
+  // A section's onward link always comes after its content, on the left, in the same size and spacing.
+  const more = (href, label) => `<div class="section-more">${textLink(href, label)}</div>`;
 
   P.home = () => `
     <section class="hero" aria-label="Takis Angelides Furnihome">
@@ -157,16 +161,23 @@
         <div class="brand-options" id="houseList" role="group" aria-label="${t('nav.houses')}">${houses.map((h, i) => `<button type="button" data-brand="${h.id}" aria-pressed="${i === 0}" aria-controls="brandPreview">${esc(h.name)}</button>`).join('')}</div>
       </div></div>
     </section>
-    <div class="wrap brands-after">${alsoList()}${textLink('#/brands', t('hero.discover'))}</div>
+    <section class="brands-swipe" aria-labelledby="brandsSwipeTitle">
+      <div class="wrap">${head(t('nav.houses'), swipeCount('brandsTrack', houses.length), 'brandsSwipeTitle')}</div>
+      <div class="brands-track" id="brandsTrack" tabindex="0" role="region" aria-roledescription="${t('selected.carousel')}" aria-labelledby="brandsSwipeTitle">${houses.map((h) => `<a class="brand-slide" href="#/brand/${h.id}">
+        <div class="brand-slide-photo">${photo(h.feature, h.name, '86vw')}</div><span class="brand-slide-name">${esc(h.name)}</span><span class="sm">${esc(origin(h))}</span></a>`).join('')}</div>
+    </section>
+    <div class="wrap brands-after">${alsoList()}${more('#/brands', t('hero.discover'))}</div>
 
     <section class="sec picks-sec"><div class="wrap">
-      <div class="head picks-head"><div class="picks-title"><h2 class="title" id="picksTitle">${t('selected.title')}</h2><div class="carousel-controls"><span id="picksCount" class="carousel-count" aria-live="polite"></span><button type="button" data-picks-step="-1" aria-controls="picks" aria-label="${t('selected.prev')}" disabled>←</button><button type="button" data-picks-step="1" aria-controls="picks" aria-label="${t('selected.next')}">→</button></div></div>${textLink('#/products', t('products.all'))}</div>
+      ${head(t('selected.title'), `<div class="carousel-controls"><span id="picksCount" class="carousel-count" aria-live="polite"></span><button type="button" data-picks-step="-1" aria-controls="picks" aria-label="${t('selected.prev')}" disabled>←</button><button type="button" data-picks-step="1" aria-controls="picks" aria-label="${t('selected.next')}">→</button></div>`, 'picksTitle')}
       <div class="picks" id="picks" tabindex="0" role="region" aria-roledescription="${t('selected.carousel')}" aria-labelledby="picksTitle">${homePicks.map((p, i) => card(p, p.brand, i, 'sel')).join('')}</div>
+      ${more('#/products', t('products.all'))}
     </div></section>
 
     ${projects.length ? `<section class="sec insp-sec"><div class="wrap">
-      ${head(t('nav.inspiration'), textLink('#/inspiration', t('insp.all')))}
-      <div class="insp-teaser">${projects.slice(0, 3).map((p, i) => projectTile(p, i ? SIZES.half : SIZES.full)).join('')}</div>
+      ${head(t('nav.inspiration'), swipeCount('inspTrack', Math.min(3, projects.length)))}
+      <div class="insp-teaser" id="inspTrack">${projects.slice(0, 3).map((p, i) => projectTile(p, i ? SIZES.half : SIZES.full)).join('')}</div>
+      ${more('#/inspiration', t('insp.all'))}
     </div></section>` : ''}
 
     ${storesStrip()}
@@ -182,8 +193,9 @@
 
   const storesStrip = () => `
     <section class="sec stores-sec"><div class="wrap">
-      ${head(t('nav.showrooms'), textLink('#/showrooms', t('stores.all')))}
-      <div class="stores">${S.stores.map((s) => `<div class="store"><h3>${city(s.id)}</h3><span>${esc(s.address)}</span><a href="${tel(s.phone)}">${esc(s.phone)}</a>${status(s.id)}</div>`).join('')}</div>
+      ${head(t('nav.showrooms'), swipeCount('storesTrack', S.stores.length))}
+      <div class="stores" id="storesTrack">${S.stores.map((s) => `<div class="store"><h3>${city(s.id)}</h3><span>${esc(s.address)}</span><a href="${tel(s.phone)}">${esc(s.phone)}</a>${status(s.id)}</div>`).join('')}</div>
+      ${more('#/showrooms', t('stores.all'))}
     </div></section>`;
 
 
@@ -430,7 +442,7 @@
     setCollection(false);
     closeMenu();
     onScroll();
-    if (!a) { startHero(); houseSelector(); startPicks(); }
+    if (!a) { startHero(); houseSelector(); startSwipeRows(); startPicks(); }
     if (a === 'inspiration' && !b) startMosaic();
     if (a === 'products') placeFilters();
     requestAnimationFrame(() => { animateStory(); revealSections(); });
@@ -460,7 +472,7 @@
   function revealSections() {
     sectionObserver?.disconnect();
     if (reduced) return;
-    const selector = '.products-grid .card, .product-filters, .statement, .head, .brands-overlay .wrap, .insp-intro .wrap, .mosaic-tile, .project-brands .wrap, .brands-after, .picks, .house-tile, .invite-copy .wrap, .history-card, .store-full, .stores, .b-intro, .grid .card, .project-gallery, .story-intro, .next-link .wrap, .appointment-body';
+    const selector = '.products-grid .card, .product-filters, .statement, .head, .section-more, .brands-track, .brands-overlay .wrap, .insp-intro .wrap, .mosaic-tile, .project-brands .wrap, .brands-after, .picks, .house-tile, .invite-copy .wrap, .history-card, .store-full, .stores, .b-intro, .grid .card, .project-gallery, .story-intro, .next-link .wrap, .appointment-body';
     const elements = $$(selector, main).filter(el => !el.parentElement.closest(selector));
     // Already-visible content stays visible, including when restoring browser history.
     const pending = elements.filter(el => {
@@ -588,6 +600,21 @@
     $('#brandPreviewMeta').textContent = origin(brand);
     $$('#houseList [data-brand]').forEach((button) => button.setAttribute('aria-pressed', button.dataset.brand === id));
   }
+  // Phones: Our Brands, Inspiration and Showrooms become rows to swipe through; each counter follows its row.
+  function startSwipeRows() {
+    $$('[data-swipe-count]').forEach((count) => {
+      const track = $(`#${count.dataset.swipeCount}`);
+      if (!track) return;
+      track.addEventListener('scroll', () => {
+        const first = track.firstElementChild;
+        if (!first) return;
+        const stride = first.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 0);
+        const atEnd = track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+        const i = atEnd ? track.children.length - 1 : Math.min(track.children.length - 1, Math.round(track.scrollLeft / stride));
+        count.textContent = `${i + 1} / ${track.children.length}`;
+      }, { passive: true });
+    });
+  }
   function houseSelector() {
     $$('#houseList [data-brand]').forEach((button) => {
       button.onclick = () => { selectHouse(button.dataset.brand); savePagePosition(); };
@@ -686,8 +713,15 @@
   });
   pv.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') step(1); if (e.key === 'ArrowLeft') step(-1); });
   let tx0 = null;
-  pv.addEventListener('touchstart', (e) => { if (e.target.closest('.pv-img')) tx0 = e.touches[0].clientX; }, { passive: true });
-  pv.addEventListener('touchend', (e) => { if (tx0 === null) return; const dx = e.changedTouches[0].clientX - tx0; tx0 = null; if (Math.abs(dx) > 40 && pvList.length > 1) step(dx < 0 ? 1 : -1); });
+  // Swipe left/right anywhere in the viewer (photo, text or buttons) to move between pieces. Mostly
+  // vertical gestures are left alone so the viewer can still scroll on small screens.
+  let ty0 = null;
+  pv.addEventListener('touchstart', (e) => { tx0 = e.touches[0].clientX; ty0 = e.touches[0].clientY; }, { passive: true });
+  pv.addEventListener('touchend', (e) => {
+    if (tx0 === null) return;
+    const dx = e.changedTouches[0].clientX - tx0, dy = e.changedTouches[0].clientY - ty0; tx0 = ty0 = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5 && pvList.length > 1) step(dx < 0 ? 1 : -1);
+  });
 
   /* ---------- booking ---------- */
   const bk = { store: 'nicosia', interest: '', date: '', time: '', name: '', phone: '', email: '', notes: '' };
@@ -820,7 +854,8 @@
           ${textLink('#/showrooms', t('stores.all'))}</div>
         <div class="contact-book"><p>${t('contact.appointment')}</p>${textLink('#/appointment', t('nav.book'))}</div>
       </div>
-      <form id="contactForm" class="contact-form" novalidate aria-describedby="contactDemo">
+      <form id="contactForm" class="contact-form" novalidate aria-labelledby="contactFormTitle" aria-describedby="contactDemo">
+        <h2 class="pf-title contact-form-title" id="contactFormTitle">${t('contact.formTitle')}</h2>
         <div class="f-row"><div class="f"><label for="cName">${t('contact.name')}</label><input id="cName" name="name" autocomplete="name" maxlength="120" required value="${esc(contactDraft.name)}"></div>
           <div class="f"><label for="cSubject">${t('contact.subject')}</label><input id="cSubject" name="subject" maxlength="160" required value="${esc(contactDraft.subject)}"></div></div>
         <div class="f-row"><div class="f"><label for="cPhone">${t('contact.phoneField')}</label><div class="contact-phone"><span>+357</span><input id="cPhone" name="phone" type="tel" autocomplete="tel-national" maxlength="32" value="${esc(contactDraft.phone)}"></div></div>
