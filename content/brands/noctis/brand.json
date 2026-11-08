@@ -6,5 +6,16 @@
     "el": "κρεβάτια",
     "ru": "кровати"
   },
-  "origin": "Italy"
+  "origin": "Italy",
+  "founded": 1990,
+  "intro": {
+    "en": "From the Marche region, Noctis has specialised in upholstered beds since 1990. Its approach combines local craft traditions with contemporary design and practical innovations, including storage systems that make more room for everyday life.",
+    "el": "Με έδρα την περιοχή Μάρκε, η Noctis ειδικεύεται στα επενδυμένα κρεβάτια από το 1990. Συνδυάζει την τοπική χειροτεχνική παράδοση με σύγχρονο σχεδιασμό και πρακτικές καινοτομίες, όπως συστήματα αποθήκευσης που δημιουργούν περισσότερο χώρο στην καθημερινότητα.",
+    "ru": "Бренд Noctis из региона Марке специализируется на кроватях с мягкой обивкой с 1990 года. Местные ремесленные традиции сочетаются с современным дизайном и практичными решениями, включая системы хранения, освобождающие место в доме."
+  },
+  "sources": [
+    "https://www.noctis.it/en/main/noctis/company",
+    "https://www.noctis.it/download_file/1248/24098"
+  ],
+  "researched": "2026-11-08"
 }

@@ -6,5 +6,15 @@
     "el": "διακόσμηση, χαλιά & κουρτίνες",
     "ru": "декор, ковры и шторы"
   },
-  "origin": "Cyprus"
+  "origin": "Cyprus",
+  "founded": null,
+  "intro": {
+    "en": "Inside by TAF brings together the finishing touches of a home: accessories, art, rugs and curtains. It is TAF’s own décor department, carrying the family business’s attention to detail into the objects around us.",
+    "el": "Το Inside by TAF συγκεντρώνει τις τελικές πινελιές ενός σπιτιού: αξεσουάρ, έργα τέχνης, χαλιά και κουρτίνες. Είναι το τμήμα διακόσμησης της TAF, που μεταφέρει την προσοχή της οικογενειακής επιχείρησης στη λεπτομέρεια στα αντικείμενα γύρω μας.",
+    "ru": "Inside by TAF объединяет завершающие штрихи интерьера: аксессуары, искусство, ковры и шторы. Собственный отдел декора TAF переносит внимание семейной компании к деталям на предметы, которые окружают нас дома."
+  },
+  "sources": [
+    "https://taf.com.cy/brands/inside-taf"
+  ],
+  "researched": "2026-11-08"
 }

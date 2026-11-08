@@ -1,6 +1,7 @@
 node_modules/
 site/img/brands/
 site/img/inspiration/
+site/img/history/
 site/data/catalog.js
 
 # local / OS files

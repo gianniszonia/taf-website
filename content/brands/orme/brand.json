@@ -6,5 +6,16 @@
     "el": "σαλόνια & ντουλάπες",
     "ru": "гостиные и гардеробные"
   },
-  "origin": "Italy"
+  "origin": "Italy",
+  "founded": 1999,
+  "intro": {
+    "en": "Established in 1999 within the Homes Group, Orme creates furniture for contemporary living and sleeping spaces. Modular wall systems, wardrobes and bedroom collections combine clean lines with flexible storage and coordinated finishes.",
+    "el": "Η Orme ιδρύθηκε το 1999 στον όμιλο Homes και δημιουργεί έπιπλα για σύγχρονους χώρους καθιστικού και ύπνου. Αρθρωτές συνθέσεις, ντουλάπες και συλλογές υπνοδωματίου συνδυάζουν καθαρές γραμμές, ευέλικτη αποθήκευση και συντονισμένα φινιρίσματα.",
+    "ru": "Основанный в 1999 году в составе группы Homes бренд Orme создаёт мебель для современных гостиных и спален. Модульные стенки, шкафы и спальные коллекции сочетают чистые линии, гибкие системы хранения и согласованные варианты отделки."
+  },
+  "sources": [
+    "https://www.homes.it/en/orme/",
+    "https://www.homes.it/en/history/"
+  ],
+  "researched": "2026-11-08"
 }

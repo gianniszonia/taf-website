@@ -6,5 +6,16 @@
     "el": "κλασικά ξύλινα έπιπλα",
     "ru": "классическая мебель из дерева"
   },
-  "origin": "Italy"
+  "origin": "Italy",
+  "founded": 1962,
+  "intro": {
+    "en": "A family furniture maker established in 1962, Guerra Vanni brings traditional craftsmanship to classic and contemporary interiors. Its collections pair carefully worked materials with elegant proportions and decorative detail.",
+    "el": "Οικογενειακή επιχείρηση επίπλων από το 1962, η Guerra Vanni μεταφέρει την παραδοσιακή δεξιοτεχνία σε κλασικούς και σύγχρονους εσωτερικούς χώρους. Οι συλλογές της συνδυάζουν προσεγμένα υλικά, κομψές αναλογίες και διακοσμητικές λεπτομέρειες.",
+    "ru": "Семейная мебельная компания Guerra Vanni, основанная в 1962 году, переносит традиционное мастерство в классические и современные интерьеры. В её коллекциях тщательно обработанные материалы сочетаются с изящными пропорциями и декоративными деталями."
+  },
+  "sources": [
+    "https://www.guerravanni.com/en/",
+    "https://www.guerravanni.com/wp-content/uploads/2021/05/Guerra-Vanni-Extraordinary-Interiors.pdf"
+  ],
+  "researched": "2026-11-08"
 }

@@ -6,5 +6,15 @@
     "el": "καθίσματα γραφείου",
     "ru": "офисные кресла"
   },
-  "origin": "Italy"
+  "origin": "Italy",
+  "founded": 1958,
+  "intro": {
+    "en": "Olivo & Groppo began as an upholstery workshop in 1958. Today its office and contract seating combines that experience with functional design, offering chairs for focused work, meetings and shared spaces.",
+    "el": "Η Olivo & Groppo ξεκίνησε ως εργαστήριο ταπετσαρίας το 1958. Σήμερα συνδυάζει αυτή την εμπειρία με λειτουργικό σχεδιασμό, δημιουργώντας καθίσματα γραφείου και επαγγελματικών χώρων για εργασία, συσκέψεις και κοινόχρηστους χώρους.",
+    "ru": "Olivo & Groppo начинала как обивочная мастерская в 1958 году. Сегодня этот опыт сочетается с функциональным дизайном в коллекциях кресел и стульев для работы, переговоров и общественных пространств."
+  },
+  "sources": [
+    "https://www.olivoegroppo.it/our-history/"
+  ],
+  "researched": "2026-11-08"
 }

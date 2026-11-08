@@ -6,5 +6,16 @@
     "el": "έπιπλα γραφείου",
     "ru": "офисная мебель"
   },
-  "origin": "Italy"
+  "origin": "Italy",
+  "founded": 1882,
+  "intro": {
+    "en": "Founded in 1882, Fantoni brings together furniture making, material research and acoustic design. Its desks, meeting tables and storage systems create practical, considered spaces for working together.",
+    "el": "Με αφετηρία το 1882, η Fantoni συνδυάζει την κατασκευή επίπλων, την έρευνα υλικών και τον ακουστικό σχεδιασμό. Γραφεία, τραπέζια συσκέψεων και συστήματα αποθήκευσης διαμορφώνουν λειτουργικούς, προσεγμένους χώρους εργασίας.",
+    "ru": "Основанная в 1882 году, Fantoni объединяет мебельное производство, исследования материалов и акустический дизайн. Письменные столы, столы для переговоров и системы хранения создают продуманные пространства для совместной работы."
+  },
+  "sources": [
+    "https://www.fantoni.it/fantoni-is-an-historical-brand-of-national-interest/?lang=en",
+    "https://www.fantoni.it/?lang=en"
+  ],
+  "researched": "2026-11-08"
 }

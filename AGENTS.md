@@ -52,6 +52,7 @@ content/brands/<id>/<Category>/<Product name>.jpg   → product: name (file name
 content/brands/<id>/brand.json                       → brand name, origin (country), founded, website, intro{en,el,ru}, speciality{en,el,ru}
 content/brands/<id>/cover.jpg / feature.jpg          → brand hero + landing slideshow / home brand-list image
 content/brands/<id>/links.json                       → optional { "Category/Name": "https://product-page" }
+content/brands/<id>/names.json                       → optional { "Category/Source name": { en, el, ru } } display titles
 content/brands/order.json                            → brand order
 content/inspiration/<Project title>/NN.jpg           → inspiration project (first photo = cover)
 content/inspiration/order.json                       → project order (first 3 shown on the home page)
@@ -87,7 +88,7 @@ site/
 `#/showrooms` · `#/story`. Legacy `#/houses`, `#/house/<id>` redirect. Unknown/empty brand → brands overview;
 unknown project → inspiration overview.
 
-Home sections: hero slideshow (brand covers) → statement → brand-name ticker → brand index with hover preview
+Home sections: hero slideshow (brand covers) → statement → brand index with hover preview
 (`feature` images) → **Selected pieces** (4 cards; one card cross-fades to another product every ~3.8 s, pool =
 all products, brands interleaved, shuffled per visit; pauses on hover / when the viewer is open / tab hidden) →
 inspiration teaser (first 3 projects) → appointment band → showrooms.
@@ -117,7 +118,7 @@ eight close-up/odd products were removed by eye for consistency.
    no brand logos. The client explicitly asked for consistency ("keep the best images").
 4. **Every user-visible string must exist in en, el and ru** (`site/data/i18n.js`; brand texts in `brand.json`).
    Fonts must support Latin + Greek + Cyrillic.
-5. **Do not lean on "Italian".** Not all brands are Italian (Cane-line = Denmark, Mistral = Spain, Inside = Cyprus).
+5. **Do not lean on "Italian".** Not all brands are Italian (Cane-line = Denmark, Inside = Cyprus; Mistral is Italy, verified from Homes Group).
    Copy is about TAF. Never use "L'arte di abitare" (a real company's name).
 6. The booking form is a **demo**: validates and confirms, sends nothing. Keep the "Demonstration only" note.
 7. Keep the product viewer minimal (see Content model).
@@ -137,8 +138,13 @@ eight close-up/odd products were removed by eye for consistency.
 
 ## Client preferences (from feedback so far)
 
-Simplicity, elegance, consistency; few subtle animations (wipe reveals, gentle parallax, slow brand ticker, 0.9 s
+Simplicity, elegance, consistency; few subtle animations (wipe reveals, gentle parallax, 0.9 s
 hero cross-fade, **no zoom on hero images**, picks rotation); hero title "Furnishing homes since 1965." in
 **Noto Serif Display, weight 330** (400 was too heavy, Manrope sans rejected); darker scrim on bright photos;
 "Book an appointment" top-right; visible language switch; footer lists **all** brands; no footer tagline.
 Details in [docs/design.md](docs/design.md).
+
+Product title overrides: imported filenames stay as internal IDs. names.json supplies clean model names
+or translated brand + type labels where the source name is an opaque code/placeholder. Cards, image
+alt text, viewer headings and booking notes must use the display title; viewer lookup and product links
+continue to use the original category/name key. Do not show raw filenames when an override exists.

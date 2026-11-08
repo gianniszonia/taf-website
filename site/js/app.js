@@ -18,27 +18,30 @@
   const city = (c) => t('city')[c] || c;
   const country = (c) => t('country')[c] || c || '';
   const tx = (o) => (o ? (typeof o === 'string' ? o : o[lang] || o.en || '') : '');
+  const productName = (p) => tx(p.title) || p.name;
   const origin = (b) => [country(b.origin), b.founded].filter(Boolean).join(' · ');
 
   /* ---------- data ---------- */
   const houses = CAT.brands.filter((b) => b.featured);
+  // Keep the curated landing slideshow separate from the expanded brand catalogue.
+  const heroHouses = ['natuzzi-italia', 'poliform', 'porada', 'calligaris', 'natuzzi-editions']
+    .map((id) => houses.find((b) => b.id === id)).filter(Boolean);
   const others = CAT.brands.filter((b) => !b.featured);
   const projects = CAT.inspiration || [];
   const byId = Object.fromEntries(CAT.brands.map((b) => [b.id, b]));
-  const findPiece = (brand, name) => byId[brand]?.products.find((p) => p.name === name);
+  const findPiece = (brand, category, name) => byId[brand]?.products.find((p) => p.category === category && p.name === name);
   // a product photo by brand + name pattern (falls back to a category, then the first product)
   const pick = (brand, test, fallbackCat) => {
     const b = byId[brand] || houses[0];
     return (b.products.find((p) => test.test(p.name)) || b.products.find((p) => p.category === fallbackCat) || b.products[0]).img;
   };
-  // pool for the rotating "Selected pieces": all products, brands interleaved, shuffled once per visit
+  // A stable, brand-interleaved order for the manually controlled product carousel.
   const pool = (() => {
-    const lists = houses.map((h) => h.products.map((p) => ({ ...p, brand: h })).sort(() => Math.random() - 0.5));
+    const lists = houses.map((h) => h.products.map((p) => ({ ...p, brand: h })));
     const out = [];
     for (let i = 0; out.length < lists.reduce((n, l) => n + l.length, 0); i++) for (const l of lists) if (l[i]) out.push(l[i]);
     return out;
   })();
-  let shown = pool.slice(0, 4);
 
   /* ---------- hours ---------- */
   const nowCY = () => {
@@ -63,15 +66,11 @@
   /* ---------- building blocks ---------- */
   const img = (src, alt = '', extra = '') => `<img src="${src}" alt="${esc(alt)}" loading="lazy" decoding="async" onload="this.classList.add('ld')" ${extra}>`;
   // one product = one photo = one post
-  const card = (p, brand, i, list) => `<button class="card" data-piece="${brand.id}|${esc(p.name)}" data-list="${list}" style="--d:${Math.min(i, 8) * 70}ms">
-      <div class="ph wipe">${img(p.img.card, `${p.name} — ${brand.name}`)}</div>
-      <div class="cap"><h3>${esc(p.name)}</h3><span class="sm">${list === 'sel' ? esc(brand.name) : cat(p.category)}</span></div>
+  const card = (p, brand, i, list) => `<button class="card" data-piece="${brand.id}|${esc(p.category)}|${esc(p.name)}" data-list="${list}" style="--d:${Math.min(i, 8) * 70}ms">
+      <div class="ph wipe">${img(p.img.card, `${productName(p)} — ${brand.name}`)}</div>
+      <div class="cap"><h3>${esc(productName(p))}</h3><span class="sm">${list === 'sel' ? esc(brand.name) : cat(p.category)}</span></div>
     </button>`;
-  const marquee = () => {
-    const names = CAT.brands.map((b) => `<span>${esc(b.name)}</span><i>✦</i>`).join('');
-    return `<div class="marquee" aria-hidden="true"><div class="marquee-track">${names}${names}</div></div>`;
-  };
-  const alsoList = () => `<div class="also rv"><span class="eyebrow">${t('houses.also')}</span><ul>${others.map((b) => `<li>${b.website ? `<a href="${b.website}" target="_blank" rel="noopener">${esc(b.name)}</a>` : esc(b.name)}<span> — ${esc(country(b.origin))}${b.speciality ? `, ${esc(tx(b.speciality))}` : ''}</span></li>`).join('')}</ul></div>`;
+  const alsoList = () => `<div class="also rv"><span class="eyebrow">${t('houses.also')}</span><ul>${others.map((b) => `<li>${b.website ? `<a href="${b.website}" target="_blank" rel="noopener">${esc(b.name)}</a>` : esc(b.name)}<span> — ${esc(origin(b))}${b.speciality ? `, ${esc(tx(b.speciality))}` : ''}</span></li>`).join('')}</ul></div>`;
   const projectTile = (p, cls = '') => `<a class="house-tile rv wipe ${cls}" href="#/inspiration/${p.id}">${img(p.cover.lg, p.title)}<div class="t"><h2>${esc(p.title)}</h2><span class="eyebrow">${t('insp.photos', { n: p.images.length })}</span></div></a>`;
 
   /* ---------- pages ---------- */
@@ -79,14 +78,14 @@
 
   P.home = () => `
     <section class="hero" aria-label="TAF">
-      <div class="hero-media" data-parallax="0.25">${houses.map((h, i) => `<div class="hero-img${i === 0 ? ' on' : ''}"><img src="${h.cover.lg}" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}></div>`).join('')}</div>
+      <div class="hero-media">${heroHouses.map((h, i) => `<div class="hero-img${i === 0 ? ' on' : ''}"><img src="${h.cover.lg}" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}></div>`).join('')}</div>
       <div class="hero-body"><div class="wrap">
         <h1><span class="line-mask"><span>${t('hero.l1')}</span></span><span class="line-mask"><span><em>${t('hero.l2')}</em></span></span></h1>
         <div class="hero-actions fade-in"><a class="btn light" href="#/brands">${t('hero.discover')}</a><button class="link" data-book style="color:#fff">${t('nav.book')} <span class="arr">→</span></button></div>
       </div></div>
       <div class="hero-bar fade-in"><div class="wrap"><div class="hero-bar-in">
-        <a class="hero-caption" id="heroLink" href="#/brand/${houses[0].id}" aria-live="polite"><b id="heroName">${esc(houses[0].name)}</b><span id="heroMeta">${esc(origin(houses[0]))}</span></a>
-        <div class="hero-progress"><span class="hero-count" id="heroCount">01 / ${String(houses.length).padStart(2, '0')}</span>${houses.map((h, i) => `<button class="${i === 0 ? 'on' : ''}" data-slide="${i}" aria-label="${esc(h.name)}"></button>`).join('')}</div>
+        <a class="hero-caption" id="heroLink" href="#/brand/${heroHouses[0].id}" aria-live="polite"><b id="heroName">${esc(heroHouses[0].name)}</b><span id="heroMeta">${esc(origin(heroHouses[0]))}</span></a>
+        <div class="hero-progress"><span class="hero-count" id="heroCount">01 / ${String(heroHouses.length).padStart(2, '0')}</span>${heroHouses.map((h, i) => `<button class="${i === 0 ? 'on' : ''}" data-slide="${i}" aria-label="${esc(h.name)}"></button>`).join('')}</div>
       </div></div></div>
     </section>
 
@@ -96,10 +95,8 @@
       <a class="link rv d2" href="#/story">${t('intro.link')} <span class="arr">→</span></a>
     </div></div></section>
 
-    ${marquee()}
-
-    <section class="sec"><div class="wrap">
-      <div class="head"><div><span class="eyebrow rv">${t('houses.eyebrow')}</span><h2 class="title rv d1">${t('houses.title')}</h2></div><p class="rv d2">${t('houses.sub')}</p></div>
+    <section class="sec home-makers"><div class="wrap">
+      <div class="head"><div><h2 class="title rv d1">${t('houses.title')}</h2></div><p class="rv d2">${t('houses.sub')}</p></div>
       <div class="houses">
         <div>
           <div class="house-list" id="houseList">${houses.map((h, i) => `
@@ -114,8 +111,8 @@
     </div></section>
 
     <section class="sec" style="padding-top:0"><div class="wrap">
-      <div class="head"><div><span class="eyebrow rv">${t('selected.eyebrow')}</span><h2 class="title rv d1">${t('selected.title')}</h2></div></div>
-      <div class="grid four picks" id="picks">${shown.map((p, i) => card(p, p.brand, i, 'sel')).join('')}</div>
+      <div class="head"><div><h2 class="title rv d1" id="picksTitle">${t('selected.title')}</h2></div><div class="carousel-controls"><span id="picksCount" class="carousel-count" aria-live="polite"></span><button type="button" data-picks-step="-1" aria-controls="picks" aria-label="${t('selected.prev')}" disabled>←</button><button type="button" data-picks-step="1" aria-controls="picks" aria-label="${t('selected.next')}">→</button></div></div>
+      <div class="picks" id="picks" tabindex="0" role="region" aria-roledescription="${t('selected.carousel')}" aria-labelledby="picksTitle">${pool.map((p, i) => card(p, p.brand, i, 'sel')).join('')}</div>
     </div></section>
 
     ${projects.length ? `<section class="sec" style="padding-top:0"><div class="wrap">
@@ -127,7 +124,7 @@
     ${storesStrip()}`;
 
   const band = (src, title = t('visit.title'), text = t('visit.text'), interest = '') => `
-    <section class="band rv"><div class="band-media" data-parallax="0.18">${img(src, '')}</div><div class="wrap">
+    <section class="band rv"><div class="band-media">${img(src, '')}</div><div class="wrap">
       <span class="eyebrow">${t('visit.eyebrow')}</span><h2>${title}</h2><p>${text}</p>
       <button class="btn light" data-book ${interest ? `data-interest="${interest}"` : ''}>${t('nav.book')}</button></div></section>`;
 
@@ -139,7 +136,7 @@
 
   P.brands = () => `
     <section class="sec" style="padding-bottom:clamp(48px,6vw,88px)"><div class="wrap">
-      <div class="head" style="margin-bottom:0"><div><span class="eyebrow rv">${t('houses.eyebrow')}</span><h1 class="rv d1 display">${t('houses.title')}</h1></div><p class="rv d2">${t('houses.sub')}</p></div>
+      <div class="head" style="margin-bottom:0"><div><h1 class="rv d1 display">${t('houses.title')}</h1></div><p class="rv d2">${t('houses.sub')}</p></div>
     </div></section>
     <section style="padding-bottom:clamp(96px,12vw,180px)"><div class="wrap">
       <div class="house-grid">${houses.map((h) => `<a class="house-tile rv wipe" href="#/brand/${h.id}">${img(h.cover.lg, h.name)}<div class="t"><h2>${esc(h.name)}</h2><span class="eyebrow">${esc(origin(h))}<br>${t('houses.pieces', { n: h.products.length })}</span></div></a>`).join('')}</div>
@@ -156,7 +153,7 @@
     const next = houses[(houses.indexOf(h) + 1) % houses.length];
     const bandImg = (h.products.find((p) => p.category === 'Beds') || h.products.at(-1)).img.lg;
     return `
-    <section class="b-hero"><div class="b-media" data-parallax="0.3">${img(h.cover.lg, h.name, 'fetchpriority="high" loading="eager"')}</div><div class="wrap">
+    <section class="b-hero"><div class="b-media">${img(h.cover.lg, h.name, 'fetchpriority="high" loading="eager"')}</div><div class="wrap">
       <span class="eyebrow fade-in"><a href="#/brands">${t('houses.eyebrow')}</a> &nbsp;/&nbsp; ${esc(country(h.origin))}${h.founded ? ` · ${t('brand.since', { y: h.founded })}` : ''}</span>
       <h1><span class="line-mask"><span>${esc(h.name)}</span></span></h1>
     </div></section>
@@ -177,7 +174,7 @@
 
     ${band(bandImg, t('brand.see', { brand: esc(h.name) }), t('brand.seeText'), h.id)}
 
-    <a class="next-house" href="#/brand/${next.id}"><div class="b-media" data-parallax="0.15">${img(next.cover.lg, next.name)}</div><div class="wrap"><span class="eyebrow">${t('brand.next')}</span><h2>${esc(next.name)}</h2><span class="eyebrow" style="margin:18px 0 0">${esc(origin(next))}</span></div></a>`;
+    <a class="next-house" href="#/brand/${next.id}"><div class="b-media">${img(next.cover.lg, next.name)}</div><div class="wrap"><span class="eyebrow">${t('brand.next')}</span><h2>${esc(next.name)}</h2><span class="eyebrow" style="margin:18px 0 0">${esc(origin(next))}</span></div></a>`;
   };
 
   P.inspiration = () => `
@@ -193,15 +190,18 @@
     if (!p) return P.inspiration();
     const next = projects[(projects.indexOf(p) + 1) % projects.length];
     return `
-    <section class="b-hero"><div class="b-media" data-parallax="0.3">${img(p.cover.lg, p.title, 'fetchpriority="high" loading="eager"')}</div><div class="wrap">
+    <section class="b-hero"><div class="b-media">${img(p.cover.lg, p.title, 'fetchpriority="high" loading="eager"')}</div><div class="wrap">
       <span class="eyebrow fade-in"><a href="#/inspiration">${t('insp.eyebrow')}</a> &nbsp;/&nbsp; ${t('insp.photos', { n: p.images.length })}</span>
       <h1><span class="line-mask"><span>${esc(p.title)}</span></span></h1>
     </div></section>
     <section class="sec"><div class="wrap">
+      ${p.description ? `<div class="project-intro"><span class="eyebrow">${t('insp.about')}</span><div class="project-copy">${(p.description[lang] || p.description.en).map((paragraph) => `<p>${esc(paragraph)}</p>`).join('')}
+        ${p.collaboration ? `<p class="project-credit"><span>${t('insp.collaboration')}</span><a href="${esc(p.collaboration.url)}" target="_blank" rel="noopener noreferrer">${esc(p.collaboration.name)} <span aria-hidden="true">↗</span></a></p>` : ''}
+      </div></div>` : ''}
       <div class="masonry" id="photos">${p.images.map((im, i) => `<button class="rv wipe" data-photo="${i}" aria-label="${esc(p.title)} ${i + 1}" style="aspect-ratio:${im.w}/${im.h}">${img(im.sm, `${p.title} ${i + 1}`)}</button>`).join('')}</div>
     </div></section>
     ${band(pick('porada', /klem/i, 'Sofas').lg)}
-    ${next && next !== p ? `<a class="next-house" href="#/inspiration/${next.id}"><div class="b-media" data-parallax="0.15">${img(next.cover.lg, next.title)}</div><div class="wrap"><span class="eyebrow">${t('insp.next')}</span><h2>${esc(next.title)}</h2></div></a>` : ''}`;
+    ${next && next !== p ? `<a class="next-house" href="#/inspiration/${next.id}"><div class="b-media">${img(next.cover.lg, next.title)}</div><div class="wrap"><span class="eyebrow">${t('insp.next')}</span><h2>${esc(next.title)}</h2></div></a>` : ''}`;
   };
 
   P.showrooms = () => `
@@ -220,36 +220,38 @@
     </div></section>`;
 
   P.story = () => `
-    <section class="sec"><div class="wrap story-grid">
-      <div><span class="eyebrow rv">${t('about.eyebrow')}</span><h1 class="rv d1" style="font-size:clamp(46px,6vw,96px);font-weight:200;margin:22px 0 44px">${t('about.title')}</h1>
-        <p class="rv d2">${t('about.p1')}</p><p class="rv d3">${t('about.p2')}</p></div>
-      <div class="ph rv wipe">${img(pick('porada', /copine/i, 'Armchairs').lg, '')}</div>
+    <section class="sec"><div class="wrap story-intro">
+      <div><span class="eyebrow">${t('about.eyebrow')}</span><h1>${t('about.title')}</h1></div>
+      <div class="story-summary"><p>${t('about.p1')}</p><p>${t('about.p2')}</p></div>
     </div></section>
     <section class="sec" style="padding-top:0"><div class="wrap">
-      <span class="eyebrow rv" style="margin-bottom:28px">${t('about.timeline')}</span>
-      <div class="timeline"><ol>${S.timeline.map(([y, s]) => `<li class="rv"><b>${y === 'Today' ? new Date().getFullYear() : y}</b><span>${esc(tx(s))}</span></li>`).join('')}</ol></div>
+      <h2 class="eyebrow history-heading">${t('about.timeline')}</h2>
+      <div class="history-list">${(CAT.history || []).map((entry, i) => `<article class="history-card">
+        <div class="history-photo">${img(entry.img.sm, '', `width="${entry.img.w}" height="${entry.img.h}"`)}</div>
+        <div class="history-caption"><h3>${esc(tx(entry.period))}</h3><p>${esc(tx(entry.caption))}</p></div>
+      </article>`).join('')}</div>
     </div></section>
     ${band(pick('natuzzi-italia', /botanic/i, 'Armchairs').lg)}`;
 
   P.missing = () => `<section class="sec"><div class="wrap"><h1 class="title">404</h1><p style="margin-top:24px"><a class="link" href="#/">TAF <span class="arr">→</span></a></p></div></section>`;
 
-  /* ---------- router (with a soft cross-fade between pages) ---------- */
+  /* ---------- router ---------- */
   const main = $('#main');
   const header = $('#header');
   let query = new URLSearchParams();
   const parse = () => { const [p, qs = ''] = (location.hash.replace(/^#\/?/, '') || '').split('?'); return { parts: p.split('/').filter(Boolean), q: new URLSearchParams(qs) }; };
-  let first = true;
   const NAV_FOR = { brand: 'brands', inspiration: 'inspiration' };
 
   function render(keep) {
     if (/^#\/houses?\b/.test(location.hash)) history.replaceState(null, '', location.hash.replace('#/houses', '#/brands').replace('#/house/', '#/brand/'));
-    clearInterval(heroTimer); clearInterval(picksTimer);
+    clearInterval(heroTimer); stopPicks();
     const { parts: [a, b], q } = parse();
     query = q;
     const pages = { undefined: () => P.home(), brands: () => P.brands(), brand: () => P.brand(b, q), inspiration: () => (b ? P.project(b) : P.inspiration()), showrooms: () => P.showrooms(), story: () => P.story() };
     main.classList.remove('ready');
     main.innerHTML = (pages[a] || P.missing)();
     document.body.classList.toggle('on-hero', !!$('.hero, .b-hero', main));
+    document.body.classList.toggle('on-home', !a);
     const proj = a === 'inspiration' && b && projects.find((x) => x.id === b);
     document.title = a === 'brand' && byId[b] ? `${byId[b].name} — Takis Angelides Furnihome`
       : proj ? `${proj.title} — Takis Angelides Furnihome`
@@ -257,56 +259,38 @@
     $$('.nav a[href^="#/"]').forEach((l) => l.classList.toggle('on', l.getAttribute('href') === `#/${NAV_FOR[a] || a}`));
     closeMenu();
     if (!keep) window.scrollTo({ top: 0, behavior: 'instant' });
-    lastY = scrollY; onScroll();
-    requestAnimationFrame(() => requestAnimationFrame(() => { main.classList.add('ready'); main.classList.remove('out'); }));
-    observe();
+    onScroll();
+    requestAnimationFrame(() => requestAnimationFrame(() => { main.classList.add('ready'); }));
+    markLoadedImages();
     if (!a) { startHero(); houseHover(); startPicks(); }
   }
   function route(keep = false) {
-    if (first || keep || reduced) { first = false; return render(keep); }
-    main.classList.add('out');
-    setTimeout(() => render(false), 380);
+    render(keep);
   }
 
   /* ---------- scroll-driven behaviours ---------- */
-  let io;
-  function observe() {
-    io?.disconnect();
-    io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
-    $$('.rv:not(.in), .wipe:not(.in), .card:not(.in)').forEach((el) => io.observe(el));
+  function markLoadedImages() {
     $$('img').forEach((i) => { if (i.complete && i.naturalWidth) i.classList.add('ld'); });
   }
-  const revealFallback = () => { const lim = innerHeight * .96; for (const el of $$('.rv:not(.in), .wipe:not(.in), .card:not(.in)')) if (el.getBoundingClientRect().top < lim) el.classList.add('in'); };
-
-  function parallax() {
-    if (reduced) return;
-    for (const el of $$('[data-parallax]', main)) {
-      const r = el.parentElement.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight) continue;
-      el.style.transform = `translate3d(0, ${((r.top + r.height / 2) - innerHeight / 2) * -(+el.dataset.parallax) * 0.4}px, 0)`;
-    }
-  }
-
-  let lastY = 0;
   function onScroll() {
-    const y = scrollY;
     const hero = $('.hero, .b-hero', main);
-    header.classList.toggle('solid', y > (hero ? hero.offsetHeight - 90 : -1));
-    header.classList.toggle('hide', y > 500 && y > lastY + 2 && !document.body.classList.contains('menu-open'));
-    if (y < lastY - 2) header.classList.remove('hide');
-    lastY = y;
-    revealFallback(); parallax();
+    const bounds = hero?.getBoundingClientRect();
+    header.classList.toggle('solid', !hero || scrollY > 64);
+    // Only the opening photograph moves; the following sections scroll normally.
+    if (hero?.classList.contains('hero')) {
+      const offset = reduced ? 0 : Math.min(Math.max(-bounds.top, 0), bounds.height) * .6;
+      hero.style.setProperty('--hero-shift', `${offset}px`);
+    }
   }
   let raf = 0;
   addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; onScroll(); }); }, { passive: true });
-  addEventListener('resize', parallax);
-  setInterval(revealFallback, 800);
+  addEventListener('resize', onScroll);
 
   let heroTimer;
   function startHero() {
     clearInterval(heroTimer);
     const slides = $$('.hero-img'); const dots = $$('.hero-progress button');
-    if (slides.length < 2) return;
+    if (slides.length < 2 || reduced) return;
     let i = 0; const DUR = 7000;
     document.documentElement.style.setProperty('--dur', DUR + 'ms');
     const go = (n) => {
@@ -317,8 +301,8 @@
       const nm = $('#heroName'), mt = $('#heroMeta');
       nm.classList.add('swap'); mt.classList.add('swap');
       $('#heroCount').textContent = `${String(i + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-      $('#heroLink').setAttribute('href', `#/brand/${houses[i].id}`);
-      setTimeout(() => { if (!nm.isConnected) return; nm.textContent = houses[i].name; mt.textContent = origin(houses[i]); nm.classList.remove('swap'); mt.classList.remove('swap'); }, 250);
+      $('#heroLink').setAttribute('href', `#/brand/${heroHouses[i].id}`);
+      setTimeout(() => { if (!nm.isConnected) return; nm.textContent = heroHouses[i].name; mt.textContent = origin(heroHouses[i]); nm.classList.remove('swap'); mt.classList.remove('swap'); }, 250);
     };
     const tick = () => go(i + 1);
     heroTimer = setInterval(tick, DUR);
@@ -332,50 +316,52 @@
     });
   }
 
-  /* ---------- rotating "Selected pieces": one card changes at a time ---------- */
-  let picksTimer, pickCursor = 4, pickSlot = 0;
+  /* ---------- manually controlled Selected pieces carousel ---------- */
+  let stopPicks = () => {};
   function startPicks() {
-    clearInterval(picksTimer);
-    const grid = $('#picks');
-    if (!grid || pool.length <= 4 || reduced) return;
-    let paused = false;
-    grid.addEventListener('mouseenter', () => (paused = true));
-    grid.addEventListener('mouseleave', () => (paused = false));
-    picksTimer = setInterval(() => {
-      if (!grid.isConnected) return clearInterval(picksTimer);
-      if (paused || pv.open || document.hidden) return;
-      // next product not already on screen
-      let next; for (let k = 0; k < pool.length; k++) { next = pool[pickCursor++ % pool.length]; if (!shown.includes(next)) break; }
-      const slot = pickSlot++ % 4;
-      const el = grid.children[slot];
-      if (!el || el.classList.contains('swap')) return;
-      el.classList.add('swap');
-      // preload, then swap after the fade-out; never wait more than 1.5s (background tabs can stall decoding)
-      const pre = new Image(); pre.src = next.img.card;
-      let done = false;
-      const apply = () => { if (done) return; done = true; setTimeout(() => {
-        if (!el.isConnected) return;
-        shown[slot] = next;
-        el.dataset.piece = `${next.brand.id}|${next.name}`;
-        const im = $('img', el); im.src = next.img.card; im.alt = `${next.name} — ${next.brand.name}`;
-        $('h3', el).textContent = next.name; $('.sm', el).textContent = next.brand.name;
-        el.classList.remove('swap');
-      }, 450); };
-      pre.onload = pre.onerror = apply; setTimeout(apply, 1500);
-    }, 3800);
+    const track = $('#picks');
+    if (!track) return;
+    const buttons = $$('[data-picks-step]');
+    const stride = () => track.firstElementChild.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap);
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      buttons[0].disabled = track.scrollLeft <= 2;
+      buttons[1].disabled = track.scrollLeft >= max - 2;
+      const first = Math.round(track.scrollLeft / stride());
+      const visible = Math.round((track.clientWidth + parseFloat(getComputedStyle(track).columnGap)) / stride());
+      const range = visible === 1 ? `${first + 1}` : `${first + 1}–${Math.min(pool.length, first + visible)}`;
+      $('#picksCount').textContent = `${range} / ${pool.length}`;
+    };
+    const move = (direction) => {
+      const visible = Math.round((track.clientWidth + parseFloat(getComputedStyle(track).columnGap)) / stride());
+      track.scrollBy({ left: direction * stride() * visible, behavior: reduced ? 'instant' : 'smooth' });
+    };
+    buttons.forEach((button) => button.onclick = () => move(Number(button.dataset.picksStep)));
+    track.addEventListener('scroll', update, { passive: true });
+    track.addEventListener('keydown', (e) => {
+      if (e.target !== track) return;
+      if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+        e.preventDefault();
+        if (e.key === 'Home' || e.key === 'End') track.scrollTo({ left: e.key === 'Home' ? 0 : track.scrollWidth, behavior: reduced ? 'instant' : 'smooth' });
+        else move(e.key === 'ArrowLeft' ? -1 : 1);
+      }
+    });
+    addEventListener('resize', update);
+    stopPicks = () => removeEventListener('resize', update);
+    update();
   }
 
   const menuBtn = $('#menuBtn');
-  function closeMenu() { document.body.classList.remove('menu-open'); menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.setAttribute('aria-label', t('nav.menu')); document.body.style.overflow = ''; }
+  function closeMenu() { setContact(false); document.body.classList.remove('menu-open'); menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.setAttribute('aria-label', t('nav.menu')); document.body.style.overflow = ''; }
 
   /* ---------- viewer: a product (photo + brand + category + two buttons) or an inspiration photo ---------- */
   const pv = $('#piece');
   let pvList = [], pvIdx = 0, pvMode = 'piece';
-  function openPiece(brandId, name, listKey) {
+  function openPiece(brandId, category, name, listKey) {
     pvMode = 'piece';
-    // the list is whatever cards are on screen (rotating picks or the brand grid)
-    pvList = $$(listKey === 'sel' ? '#picks .card' : '#grid .card').map((c) => { const [bid, n] = c.dataset.piece.split('|'); return { p: findPiece(bid, n), b: byId[bid] }; });
-    pvIdx = Math.max(0, pvList.findIndex((x) => x.p.name === name && x.b.id === brandId));
+    // Navigate through the carousel collection or the current filtered brand grid.
+    pvList = $$(listKey === 'sel' ? '#picks .card' : '#grid .card').map((c) => { const [bid, category, n] = c.dataset.piece.split('|'); return { p: findPiece(bid, category, n), b: byId[bid] }; });
+    pvIdx = Math.max(0, pvList.findIndex((x) => x.p.name === name && x.p.category === category && x.b.id === brandId));
     renderViewer(); if (!pv.open) pv.showModal();
   }
   function openPhoto(i) {
@@ -386,7 +372,7 @@
   }
   function renderViewer() {
     const n = pvList.length;
-    const nav = n > 1 ? `<div class="pv-nav"><button data-step="-1" aria-label="Previous">←</button><span class="pv-count" aria-live="polite">${pvIdx + 1} / ${n}</span><button data-step="1" aria-label="Next">→</button></div>` : '';
+    const nav = n > 1 ? `<div class="pv-nav"><button data-step="-1" aria-label="${t('viewer.prev')}">←</button><span class="pv-count" aria-live="polite">${pvIdx + 1} / ${n}</span><button data-step="1" aria-label="${t('viewer.next')}">→</button></div>` : '';
     pv.classList.toggle('photo', pvMode === 'photo');
     if (pvMode === 'photo') {
       const { im, title } = pvList[pvIdx];
@@ -397,12 +383,12 @@
     const { p, b } = pvList[pvIdx];
     const site = p.url || b.website;
     pv.innerHTML = `<button class="x" data-close aria-label="${t('book.close')}"></button>
-      <div class="pv-img"><img src="${p.img.lg}" alt="${esc(p.name)} — ${esc(b.name)}">${nav}</div>
+      <div class="pv-img"><img src="${p.img.lg}" alt="${esc(productName(p))} — ${esc(b.name)}">${nav}</div>
       <div class="pv-body">
-        <h2>${esc(p.name)}</h2>
+        <h2>${esc(productName(p))}</h2>
         <dl><dt>${t('piece.house')}</dt><dd><a href="#/brand/${b.id}" data-close>${esc(b.name)}</a></dd><dt>${t('piece.category')}</dt><dd>${cat(p.category)}</dd></dl>
         <div class="pv-actions">
-          <button class="btn" data-book data-interest="${b.id}" data-piece-name="${esc(p.name)}">${t('nav.book')}</button>
+          <button class="btn" data-book data-interest="${b.id}" data-piece-name="${esc(productName(p))}">${t('nav.book')}</button>
           ${site ? `<a class="btn ghost" href="${esc(site)}" target="_blank" rel="noopener">${t('piece.visit')} <span aria-hidden="true">↗</span></a>` : ''}
         </div>
       </div>`;
@@ -421,6 +407,31 @@
   const sheet = $('#book');
   const bk = { store: 'nicosia', interest: '', date: '', time: '', name: '', phone: '', email: '', notes: '' };
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const dateLimits = () => {
+    const min = new Date(); min.setHours(12, 0, 0, 0); min.setDate(min.getDate() + 1);
+    const max = new Date(min); max.setDate(max.getDate() + 89);
+    return { min, max };
+  };
+  const availableDate = (d) => {
+    const { min, max } = dateLimits();
+    return d >= min && d <= max && S.hours[bk.store][d.getDay()].some(([a, b]) => toMin(b) - toMin(a) >= 60);
+  };
+  let calendarMonth;
+  function calendar() {
+    const { min, max } = dateLimits();
+    const y = calendarMonth.getFullYear(), m = calendarMonth.getMonth();
+    const first = new Date(y, m, 1, 12), last = new Date(y, m + 1, 0, 12);
+    const month = new Intl.DateTimeFormat(lang, { month: 'long', year: 'numeric' }).format(first);
+    const fullDate = new Intl.DateTimeFormat(lang, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const cells = Array.from({ length: (first.getDay() + 6) % 7 }, () => '<span></span>');
+    for (let day = 1; day <= last.getDate(); day++) {
+      const d = new Date(y, m, day, 12), value = iso(d), enabled = availableDate(d);
+      cells.push(`<button type="button" data-date="${value}" ${enabled ? '' : 'disabled'} aria-pressed="${bk.date === value}" aria-label="${esc(fullDate.format(d))}${enabled ? '' : ', ' + t('book.unavailable')}">${day}</button>`);
+    }
+    return `<div class="calendar-head"><button type="button" data-month="-1" aria-label="${t('book.prevMonth')}" ${first <= new Date(min.getFullYear(), min.getMonth(), 1, 12) ? 'disabled' : ''}>←</button><span aria-live="polite">${esc(month)}</span><button type="button" data-month="1" aria-label="${t('book.nextMonth')}" ${last >= max ? 'disabled' : ''}>→</button></div>
+      <div class="calendar-week" aria-hidden="true">${[1, 2, 3, 4, 5, 6, 0].map((d) => `<span>${t('daysShort')[d]}</span>`).join('')}</div>
+      <div class="calendar-days">${cells.join('')}</div><p class="calendar-note">${t('book.availableDates')}</p>`;
+  }
   const slots = () => {
     if (!bk.date) return null;
     const out = [];
@@ -430,17 +441,24 @@
   function openBook(o = {}) {
     Object.assign(bk, { time: '' }, o);
     if (o.pieceName) bk.notes = o.pieceName;
-    renderBook(); if (pv.open) pv.close(); sheet.showModal();
+    if (bk.date && !availableDate(new Date(bk.date + 'T12:00'))) bk.date = '';
+    calendarMonth = new Date((bk.date || iso(dateLimits().min)) + 'T12:00');
+    renderBook(); if (pv.open) pv.close(); if (!sheet.open) sheet.showModal();
   }
   function renderBook(bad = '') {
-    const min = new Date(); min.setDate(min.getDate() + 1); const max = new Date(); max.setDate(max.getDate() + 90);
     const sl = slots();
     sheet.innerHTML = `<button class="x" data-close aria-label="${t('book.close')}"></button>
       <form id="bookForm" novalidate>
         <div><h2 id="bookTitle">${t('book.title')}</h2><p class="sub">${t('book.sub')}</p></div>
         <div class="f"><span class="lbl">${t('book.store')}</span><div class="chips">${S.stores.map((s) => `<button type="button" data-store-pick="${s.id}" aria-pressed="${bk.store === s.id}">${city(s.id)}</button>`).join('')}</div></div>
-        <div class="f"><label for="bInterest">${t('book.interest')}</label><select id="bInterest"><option value="">${t('book.any')}</option>${CAT.brands.map((b) => `<option value="${b.id}" ${bk.interest === b.id ? 'selected' : ''}>${esc(b.name)}</option>`).join('')}</select></div>
-        <div class="f ${bad === 'date' ? 'bad' : ''}"><label for="bDate">${t('book.date')}</label><input id="bDate" type="date" min="${iso(min)}" max="${iso(max)}" value="${bk.date}"></div>
+        <div class="f"><span class="lbl" id="interestLabel">${t('book.interest')}</span><input id="bInterest" type="hidden" value="${esc(bk.interest)}">
+          <details class="booking-picker" id="interestPicker"><summary aria-labelledby="interestLabel interestValue"><span id="interestValue">${esc(byId[bk.interest]?.name || t('book.any'))}</span><span class="picker-chevron" aria-hidden="true"></span></summary>
+            <div class="picker-panel interest-options" role="group" aria-labelledby="interestLabel">${[{ id: '', name: t('book.any') }, ...CAT.brands].map((b) => `<button type="button" data-interest-pick="${b.id}" aria-pressed="${bk.interest === b.id}"><span>${esc(b.name)}</span><span aria-hidden="true">${bk.interest === b.id ? '✓' : ''}</span></button>`).join('')}</div>
+          </details></div>
+        <div class="f ${bad === 'date' ? 'bad' : ''}"><span class="lbl" id="dateLabel">${t('book.date')}</span>
+          <details class="booking-picker" id="datePicker"><summary id="bDate" aria-labelledby="dateLabel dateValue"><span id="dateValue" class="${bk.date ? '' : 'muted'}">${bk.date ? esc(new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(bk.date + 'T12:00'))) : t('book.pickDate')}</span><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M7 2v6m10-6v6M3 11h18"/></svg></summary>
+            <div class="picker-panel calendar" id="calendar" role="group" aria-labelledby="dateLabel">${calendar()}</div>
+          </details></div>
         <div class="f ${bad === 'time' ? 'bad' : ''}"><span class="lbl">${t('book.time')}</span><div class="chips">${sl === null ? `<span class="hint">${t('book.pickDate')}</span>` : sl.length ? sl.map((s) => `<button type="button" data-slot="${s}" aria-pressed="${bk.time === s}">${s}</button>`).join('') : `<span class="hint">${t('book.closedDay')}</span>`}</div></div>
         <div class="f-row"><div class="f ${bad === 'name' ? 'bad' : ''}"><label for="bName">${t('book.name')}</label><input id="bName" autocomplete="name" value="${esc(bk.name)}"></div>
           <div class="f ${bad === 'phone' ? 'bad' : ''}"><label for="bPhone">${t('book.phone')}</label><input id="bPhone" type="tel" autocomplete="tel" placeholder="+357" value="${esc(bk.phone)}"></div></div>
@@ -452,39 +470,114 @@
   const keep = () => { for (const [k, id] of [['interest', 'bInterest'], ['name', 'bName'], ['phone', 'bPhone'], ['email', 'bEmail'], ['notes', 'bNotes']]) { const el = $('#' + id, sheet); if (el) bk[k] = el.value; } };
   sheet.addEventListener('click', (e) => {
     if (e.target === sheet || e.target.closest('[data-close]')) return sheet.close();
-    const s = e.target.closest('[data-store-pick]'); if (s) { keep(); bk.store = s.dataset.storePick; bk.time = ''; renderBook(); return; }
+    $$('.booking-picker[open]', sheet).forEach((p) => { if (!p.contains(e.target)) p.open = false; });
+    const interest = e.target.closest('[data-interest-pick]');
+    if (interest) { keep(); bk.interest = interest.dataset.interestPick; renderBook(); $('#interestPicker summary', sheet).focus(); return; }
+    const month = e.target.closest('[data-month]');
+    if (month) {
+      calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + Number(month.dataset.month), 1, 12);
+      $('#calendar', sheet).innerHTML = calendar();
+      const next = $(`[data-month="${month.dataset.month}"]`, sheet);
+      (next.disabled ? $(`[data-month="${-Number(month.dataset.month)}"]`, sheet) : next).focus(); return;
+    }
+    const date = e.target.closest('[data-date]');
+    if (date && availableDate(new Date(date.dataset.date + 'T12:00'))) { keep(); bk.date = date.dataset.date; bk.time = ''; renderBook(); $('#bDate', sheet).focus(); return; }
+    const s = e.target.closest('[data-store-pick]'); if (s) { keep(); bk.store = s.dataset.storePick; bk.time = ''; if (bk.date && !availableDate(new Date(bk.date + 'T12:00'))) bk.date = ''; renderBook(); $(`[data-store-pick="${bk.store}"]`, sheet).focus(); return; }
     const sl = e.target.closest('[data-slot]'); if (sl) { keep(); bk.time = sl.dataset.slot; renderBook(); }
   });
-  sheet.addEventListener('change', (e) => { if (e.target.id === 'bDate') { keep(); bk.date = e.target.value; bk.time = ''; renderBook(); } });
+  sheet.addEventListener('cancel', (e) => {
+    const picker = $('.booking-picker[open]', sheet);
+    if (picker) { e.preventDefault(); picker.open = false; $('summary', picker).focus(); }
+  });
   sheet.addEventListener('submit', (e) => {
-    e.preventDefault(); keep();
-    const bad = !bk.date ? 'date' : !bk.time ? 'time' : !bk.name.trim() ? 'name' : !bk.phone.trim() ? 'phone' : '';
-    if (bad) { renderBook(bad); $('.f.bad input, .f.bad button', sheet)?.focus(); return; }
+    e.preventDefault();
+    if (e.target.id === 'contactForm') { validateContact(e.target); return; }
+    keep();
+    const bad = !bk.date || !availableDate(new Date(bk.date + 'T12:00')) ? 'date' : !slots()?.includes(bk.time) ? 'time' : !bk.name.trim() ? 'name' : !bk.phone.trim() ? 'phone' : '';
+    if (bad) { renderBook(bad); $('.f.bad summary, .f.bad input, .f.bad button', sheet)?.focus(); return; }
     const date = new Intl.DateTimeFormat(lang, { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(bk.date + 'T12:00'));
     $('#bookForm', sheet).outerHTML = `<div class="done"><span class="eyebrow">${t('book.title')}</span><h2>${esc(t('book.okTitle', { name: bk.name.trim().split(/\s+/)[0] }))}</h2><p class="sub">${esc(t('book.okText', { store: city(bk.store), date, time: bk.time }))}</p><p class="note">${t('book.demo')}</p><div><button class="btn" data-close>${t('book.close')}</button></div></div>`;
   });
 
   /* ---------- chrome ---------- */
+  const contactMenu = $('#contactMenu');
+  const contactOptions = $('#contactOptions');
+  let contactPinned = false;
+  function setContact(open, pinned = false) {
+    contactOptions.hidden = !open;
+    contactPinned = open && pinned;
+    $$('[data-contact-toggle]').forEach((button) => button.setAttribute('aria-expanded', String(open)));
+  }
+  contactMenu.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') setContact(true, contactPinned); });
+  contactMenu.addEventListener('pointerleave', () => {
+    if (!contactPinned && !contactMenu.contains(document.activeElement)) setContact(false);
+  });
+  contactMenu.addEventListener('focusout', () => {
+    setTimeout(() => { if (!contactMenu.contains(document.activeElement)) setContact(false); }, 0);
+  });
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !contactOptions.hidden) { setContact(false); $('#contactTrigger').focus(); }
+  });
+  addEventListener('resize', () => {
+    if (innerWidth > 1280 && document.body.classList.contains('menu-open')) closeMenu();
+    if (innerWidth <= 1280) setContact(false);
+  });
+  const contactDraft = { name: '', subject: '', phone: '', email: '', message: '' };
+  sheet.addEventListener('input', (e) => {
+    if (e.target.closest('#contactForm') && Object.hasOwn(contactDraft, e.target.name)) contactDraft[e.target.name] = e.target.value;
+  });
+  function validateContact(form) {
+    const fields = $$('input, textarea', form);
+    fields.forEach((field) => {
+      field.value = field.value.trim();
+      contactDraft[field.name] = field.value;
+      field.setAttribute('aria-invalid', String(!field.validity.valid));
+      field.closest('.f').classList.toggle('bad', !field.validity.valid);
+    });
+    const status = $('#contactStatus', form);
+    const valid = form.checkValidity();
+    status.textContent = t(valid ? 'contact.demoDone' : 'contact.invalid');
+    status.classList.toggle('bad', !valid);
+    if (!valid) $(':invalid', form)?.focus();
+    // This preview intentionally makes no network request and opens no email client.
+  }
+  function openContact() {
+    if (pv.open) pv.close();
+    sheet.innerHTML = `<button class="x" data-close aria-label="${t('book.close')}"></button>
+      <div class="contact-body"><div><h2 id="bookTitle">${t('nav.contactUs')}</h2><p class="sub">${t('contact.sub')}</p></div>
+        <div class="contact-methods"><a href="mailto:${esc(S.headOffice.email)}"><span class="eyebrow">${t('contact.email')}</span><span>${esc(S.headOffice.email)}</span></a></div>
+        <form id="contactForm" class="contact-form" novalidate aria-describedby="contactDemo">
+          <div class="f-row"><div class="f"><label for="cName">${t('contact.name')}</label><input id="cName" name="name" autocomplete="name" maxlength="120" required value="${esc(contactDraft.name)}"></div>
+            <div class="f"><label for="cSubject">${t('contact.subject')}</label><input id="cSubject" name="subject" maxlength="160" required value="${esc(contactDraft.subject)}"></div></div>
+          <div class="f-row"><div class="f"><label for="cPhone">${t('contact.phoneField')}</label><div class="contact-phone"><span>+357</span><input id="cPhone" name="phone" type="tel" autocomplete="tel-national" maxlength="32" value="${esc(contactDraft.phone)}"></div></div>
+            <div class="f"><label for="cEmail">${t('contact.emailField')}</label><input id="cEmail" name="email" type="email" autocomplete="email" maxlength="254" required value="${esc(contactDraft.email)}"></div></div>
+          <div class="f"><label for="cMessage">${t('contact.message')}</label><textarea id="cMessage" name="message" maxlength="5000" rows="5" required>${esc(contactDraft.message)}</textarea></div>
+          <div class="contact-submit"><button class="btn" type="submit">${t('contact.send')}</button><p class="note" id="contactDemo">${t('contact.demo')}</p><p id="contactStatus" class="contact-status" role="status" aria-live="polite"></p></div>
+        </form>
+        <div class="contact-methods"><a href="${tel(S.headOffice.phone)}"><span class="eyebrow">${t('contact.call')}</span><span>${esc(S.headOffice.phone)}</span></a></div>
+        <div class="contact-stores"><h3 class="eyebrow">${t('nav.showrooms')}</h3>${S.stores.map((s) => `<div><span>${city(s.id)}</span><a href="${tel(s.phone)}">${esc(s.phone)}</a></div>`).join('')}
+          <a class="link" href="#/showrooms" data-close>${t('contact.showrooms')} <span aria-hidden="true">→</span></a></div>
+        <div class="contact-book"><p>${t('contact.appointment')}</p><button class="btn" data-book>${t('nav.book')}</button></div>
+      </div>`;
+    if (!sheet.open) sheet.showModal();
+  }
   function chrome() {
     document.documentElement.lang = lang;
     $$('[data-i18n]').forEach((el) => (el.textContent = t(el.dataset.i18n)));
     $('#lang').innerHTML = S.languages.map((l) => `<button data-lang="${l.code}" lang="${l.code}" title="${l.name}" aria-pressed="${l.code === lang}">${l.label}</button>`).join('');
-    if (!$('.nav-book')) $('#nav').insertAdjacentHTML('beforeend', '<button class="nav-book" data-book></button>');
-    $('.nav-book').textContent = t('nav.book');
+    if (!$('#navActions')) $('#nav').insertAdjacentHTML('beforeend', '<div class="nav-actions" id="navActions"><button type="button" data-book></button><button type="button" data-contact></button></div>');
+    $('#navActions [data-book]').textContent = t('nav.book');
+    $('#navActions [data-contact]').textContent = t('nav.contactUs');
+    $('#contactTrigger').setAttribute('aria-label', t('nav.contact'));
     menuBtn.setAttribute('aria-label', t('nav.menu'));
     const allBrands = [...CAT.brands].sort((a, b) => a.name.localeCompare(b.name));
     $('#footer').innerHTML = `<div class="wrap">
-      <div class="f-brands">
-        <h4>${t('houses.eyebrow')}</h4>
-        <ul>${allBrands.map((b) => `<li>${b.featured
-          ? `<a href="#/brand/${b.id}">${esc(b.name)}</a>`
-          : b.website ? `<a href="${b.website}" target="_blank" rel="noopener">${esc(b.name)} <span aria-hidden="true">↗</span></a>` : `<span>${esc(b.name)}</span>`}
-          <small>${esc(country(b.origin))}</small></li>`).join('')}</ul>
-      </div>
       <div class="f-grid">
-        <div><img src="img/logos/taf-white.svg" alt="Takis Angelides Furnihome"><p>${t('footer.tag')}</p></div>
+        <div class="f-identity"><img src="img/logos/taf-white.svg" alt="Takis Angelides Furnihome"><p>${t('footer.tag')}</p></div>
+        <div class="f-brands"><h4>${t('houses.eyebrow')}</h4><ul>${allBrands.map((b) => `<li>${b.website
+          ? `<a href="${esc(b.website)}" target="_blank" rel="noopener noreferrer">${esc(b.name)} <span aria-hidden="true">↗</span></a>` : `<span>${esc(b.name)}</span>`}</li>`).join('')}</ul></div>
         <div><h4>${t('nav.showrooms')}</h4><ul>${S.stores.map((s) => `<li><a href="#/showrooms">${city(s.id)}</a> · <a href="${tel(s.phone)}">${s.phone.replace('+357 ', '')}</a></li>`).join('')}</ul></div>
-        <div><h4>TAF</h4><ul><li><a href="#/inspiration">${t('nav.inspiration')}</a></li><li><a href="#/story">${t('nav.about')}</a></li><li><a href="mailto:${S.headOffice.email}">${S.headOffice.email}</a></li><li><a href="${tel(S.headOffice.phone)}">${S.headOffice.phone}</a></li></ul></div>
+        <div><h4>TAF</h4><ul><li><a href="#/inspiration">${t('nav.inspiration')}</a></li><li><a href="#/story">${t('nav.about')}</a></li></ul></div>
         <div><h4>Social</h4><ul><li><a href="${S.social.instagram}" target="_blank" rel="noopener">Instagram</a></li><li><a href="${S.social.facebook}" target="_blank" rel="noopener">Facebook</a></li></ul></div>
       </div>
       <div class="f-bottom"><span>© ${new Date().getFullYear()} Takis Angelides Furnihome Ltd. ${t('footer.rights')}</span><span>${S.stores.map((s) => city(s.id)).join(' · ')}</span></div>
@@ -494,10 +587,18 @@
   document.addEventListener('click', (e) => {
     const l = e.target.closest('[data-lang]');
     if (l) { lang = l.dataset.lang; store.set('taf.lang', lang); chrome(); route(true); return; }
+    const contactToggle = e.target.closest('[data-contact-toggle]');
+    if (contactToggle) {
+      const open = !contactPinned; closeMenu(); setContact(open, open);
+      if (open && e.detail === 0) $('button', contactOptions).focus();
+      return;
+    }
+    if (!e.target.closest('#contactMenu')) setContact(false);
+    if (e.target.closest('[data-contact]')) { closeMenu(); openContact(); return; }
     const b = e.target.closest('[data-book]');
     if (b) { e.preventDefault(); closeMenu(); openBook({ store: b.dataset.store || bk.store, interest: b.dataset.interest ?? bk.interest, pieceName: b.dataset.pieceName }); return; }
     const c = e.target.closest('[data-piece]');
-    if (c) { const [bid, n] = c.dataset.piece.split('|'); openPiece(bid, n, c.dataset.list); return; }
+    if (c) { const [bid, category, n] = c.dataset.piece.split('|'); openPiece(bid, category, n, c.dataset.list); return; }
     const ph = e.target.closest('[data-photo]');
     if (ph) { openPhoto(+ph.dataset.photo); return; }
     const f = e.target.closest('[data-cat]');
@@ -511,7 +612,7 @@
       grid.classList.add('out');
       setTimeout(() => {
         grid.innerHTML = h.products.filter((p) => !active || p.category === active).map((p, i) => card(p, h, i, h.id)).join('');
-        grid.classList.remove('out'); observe();
+        grid.classList.remove('out'); markLoadedImages();
       }, 260);
       const y = $('#collection').getBoundingClientRect().top + scrollY - header.offsetHeight;
       if (scrollY > y) scrollTo({ top: y, behavior: 'smooth' });

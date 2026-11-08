@@ -5,10 +5,12 @@
 //   content/brands/<id>/cover.jpg             brand hero + landing slideshow   (optional)
 //   content/brands/<id>/feature.jpg           photo for the home brand list    (optional)
 //   content/brands/<id>/links.json            { "Sofas/Bristol": "https://…" } product web pages (optional)
+//   content/brands/<id>/names.json            { "Category/Source name": { en, el, ru } } display titles (optional)
 //   content/brands/<id>/<Category>/<Product name>.jpg     one photo = one product post
 //
 //   content/inspiration/order.json            project display order (folder names, optional)
 //   content/inspiration/<Project title>/*.jpg project photos (first = cover)
+//   content/inspiration/<Project title>/project.json description{en,el,ru}, source, optional collaboration
 //
 // Writes optimised WebP images to site/img/ and data to site/data/catalog.js.
 import { readFile, writeFile, readdir, mkdir, rm } from 'node:fs/promises';
@@ -21,7 +23,7 @@ const INSPIRATION = path.join(ROOT, 'content/inspiration');
 const SITE = path.join(ROOT, 'site');
 const IMG = /\.(jpe?g|png|webp|avif|tiff?)$/i;
 // shared category folder names (anything else still works, it is just sorted last)
-const CATEGORIES = ['Sofas', 'Armchairs', 'Tables', 'Chairs', 'Beds', 'Storage', 'Kitchens', 'Outdoor', 'Accessories'];
+const CATEGORIES = ['Sofas', 'Armchairs', 'Coffee & Side Tables', 'TV Units & Wall Systems', 'Dining Chairs', 'Dining Tables', 'Sideboards', 'Stools', 'Beds', 'Kids', 'Mattresses', 'Office Chairs', 'Office Desks', 'Kitchens', 'Wardrobes', 'Outdoor', 'Art', 'Carpets', 'Curtains', 'Decoration', 'Tables', 'Chairs', 'Storage', 'Accessories'];
 
 const slug = (s) => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '');
 const readJSON = async (p, d = null) => { try { return JSON.parse(await readFile(p, 'utf8')); } catch { return d; } };
@@ -60,11 +62,16 @@ for (const id of await dirs(BRANDS)) {
   const out = path.join(SITE, 'img/brands', id);
   await mkdir(out, { recursive: true });
   const links = await readJSON(path.join(dir, 'links.json'), {});
+  const names = await readJSON(path.join(dir, 'names.json'), {});
   const products = [];
   for (const cat of (await dirs(dir)).sort(byOrder(CATEGORIES, (c) => c))) {
     for (const f of await images(path.join(dir, cat))) {
       const name = f.replace(IMG, '').trim();
-      products.push({ name, category: cat, img: await render(path.join(dir, cat, f), path.join(out, `${slug(cat)}-${slug(name)}`), CARD), url: links[`${cat}/${name}`] || '' });
+      const title = names[`${cat}/${name}`] || null;
+      if (title && ['en', 'el', 'ru'].some((lang) => typeof title[lang] !== 'string' || !title[lang].trim())) {
+        throw new Error(`${id}/${cat}/${name}: display names must contain en, el and ru`);
+      }
+      products.push({ name, title, category: cat, img: await render(path.join(dir, cat, f), path.join(out, `${slug(cat)}-${slug(name)}`), CARD), url: links[`${cat}/${name}`] || '' });
     }
   }
   const top = await images(dir);
@@ -88,17 +95,34 @@ await rm(path.join(SITE, 'img/inspiration'), { recursive: true, force: true });
 const inspOrder = await readJSON(path.join(INSPIRATION, 'order.json'), []);
 const inspiration = [];
 for (const title of (await dirs(INSPIRATION)).sort(byOrder(inspOrder, (t) => t))) {
+  const meta = await readJSON(path.join(INSPIRATION, title, 'project.json'), {});
+  if (meta.description && ['en', 'el', 'ru'].some((lang) => !Array.isArray(meta.description[lang]) || !meta.description[lang].length)) {
+    throw new Error(`${title}: project description must contain paragraphs in en, el and ru`);
+  }
   const files = await images(path.join(INSPIRATION, title));
   if (!files.length) continue;
   const out = path.join(SITE, 'img/inspiration', slug(title));
   await mkdir(out, { recursive: true });
   const imgs = [];
   for (const [i, f] of files.entries()) imgs.push(await render(path.join(INSPIRATION, title, f), path.join(out, String(i + 1).padStart(2, '0')), GALLERY));
-  inspiration.push({ id: slug(title), title, cover: await render(path.join(INSPIRATION, title, files[0]), path.join(out, 'cover'), WIDE), images: imgs });
+  inspiration.push({ id: slug(title), title, description: meta.description || null, collaboration: meta.collaboration || null,
+    source: meta.source || '', cover: await render(path.join(INSPIRATION, title, files[0]), path.join(out, 'cover'), WIDE), images: imgs });
   console.log(`inspiration: ${title} (${files.length})`);
 }
 
+// ---------- company archive (manually maintained photographs and captions) ----------
+const historyDir = path.join(ROOT, 'content/history');
+const historyOut = path.join(SITE, 'img/history');
+await mkdir(historyOut, { recursive: true });
+const history = [];
+for (const entry of await readJSON(path.join(historyDir, 'history.json'), [])) {
+  if (!entry.file || path.basename(entry.file) !== entry.file || ['en', 'el', 'ru'].some((lang) => !entry.period?.[lang] || !entry.caption?.[lang])) {
+    throw new Error('History photographs need a file name and periods/captions in all three languages');
+  }
+  history.push({ ...entry, img: await render(path.join(historyDir, entry.file), path.join(historyOut, entry.file.replace(IMG, '')), GALLERY) });
+}
+console.log(`history: ${history.length} archive photographs`);
 await mkdir(path.join(SITE, 'data'), { recursive: true });
-await writeFile(path.join(SITE, 'data/catalog.js'), `// Generated by scripts/build.mjs from content/ — do not edit by hand.\nwindow.TAF_CATALOG = ${JSON.stringify({ built: new Date().toISOString(), categories: CATEGORIES, brands, inspiration })};\n`);
+await writeFile(path.join(SITE, 'data/catalog.js'), `// Generated by scripts/build.mjs from content/ — do not edit by hand.\nwindow.TAF_CATALOG = ${JSON.stringify({ built: new Date().toISOString(), categories: CATEGORIES, brands, inspiration, history })};\n`);
 const shown = brands.filter((b) => b.featured);
 console.log(`\n${shown.length} brands with pages · ${shown.reduce((n, b) => n + b.products.length, 0)} products · ${inspiration.length} inspiration projects · ${photos} images → site/data/catalog.js`);

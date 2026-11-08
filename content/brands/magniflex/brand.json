@@ -6,5 +6,15 @@
     "el": "στρώματα",
     "ru": "матрасы"
   },
-  "origin": "Italy"
+  "origin": "Italy",
+  "founded": 1962,
+  "intro": {
+    "en": "Born in a small Tuscan workshop in 1962, Magniflex specialises in mattresses and pillows. Textile craftsmanship, material research and a focus on comfort shape a collection designed around different ways of sleeping.",
+    "el": "Με αφετηρία ένα μικρό εργαστήριο στην Τοσκάνη το 1962, η Magniflex ειδικεύεται σε στρώματα και μαξιλάρια. Η τεχνογνωσία στα υφάσματα, η έρευνα υλικών και η άνεση διαμορφώνουν μια συλλογή για διαφορετικές συνήθειες ύπνου.",
+    "ru": "Начав с небольшой мастерской в Тоскане в 1962 году, Magniflex специализируется на матрасах и подушках. Опыт работы с текстилем, исследования материалов и внимание к комфорту формируют коллекцию для разных привычек сна."
+  },
+  "sources": [
+    "https://www.magniflex.com/en/our-essence"
+  ],
+  "researched": "2026-11-08"
 }

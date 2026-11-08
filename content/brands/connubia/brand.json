@@ -1,7 +1,7 @@
 {
   "name": "Connubia",
   "origin": "Italy",
-  "founded": 2000,
+  "founded": 2016,
   "website": "https://connubia.com",
   "intro": {
     "en": "Born from Calligaris, Connubia is devoted to the essentials of the table — chairs, stools and tables in a remarkable range of forms and colours.",
@@ -12,5 +12,10 @@
     "en": "chairs & tables",
     "el": "καρέκλες & τραπέζια",
     "ru": "стулья и столы"
-  }
+  },
+  "sources": [
+    "https://www.fuorisalone.it/en/brand/351/Calligaris",
+    "https://connubia.com/en/pages/about-us"
+  ],
+  "researched": "2026-11-08"
 }

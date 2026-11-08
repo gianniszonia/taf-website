@@ -6,5 +6,17 @@
     "el": "κουζίνες",
     "ru": "кухни"
   },
-  "origin": "Italy"
+  "origin": "Italy",
+  "founded": 1988,
+  "intro": {
+    "en": "Home Cucine has made modular kitchens in Veneto since 1988. From contemporary compositions to classic cabinetry, its collections combine a choice of materials and finishes with practical layouts for everyday living.",
+    "el": "Η Home Cucine κατασκευάζει αρθρωτές κουζίνες στο Βένετο από το 1988. Από σύγχρονες συνθέσεις έως κλασικά ντουλάπια, οι συλλογές της συνδυάζουν επιλογές υλικών και φινιρισμάτων με πρακτική διαρρύθμιση για την καθημερινή ζωή.",
+    "ru": "Home Cucine производит модульные кухни в Венето с 1988 года. От современных композиций до классических фасадов — коллекции сочетают разнообразие материалов и отделки с практичными решениями для повседневной жизни."
+  },
+  "sources": [
+    "https://www.homecucine.it/wp-content/uploads/2025/03/Cat_INFINITY.pdf",
+    "https://www.homecucine.it/en/company/",
+    "https://www.homecucine.it/en/home-en/"
+  ],
+  "researched": "2026-11-08"
 }

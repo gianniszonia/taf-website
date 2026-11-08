@@ -6,5 +6,17 @@
     "el": "παιδικά δωμάτια",
     "ru": "детские комнаты"
   },
-  "origin": "Spain"
+  "origin": "Italy",
+  "founded": 1987,
+  "intro": {
+    "en": "Part of the Homes Group, Mistral has designed furniture for children and teenagers since 1987. Colour, flexible layouts and thoughtful storage bring sleeping, studying and playing together in rooms that make the most of their space.",
+    "el": "Μέλος του ομίλου Homes, η Mistral σχεδιάζει έπιπλα για παιδιά και εφήβους από το 1987. Το χρώμα, οι ευέλικτες διαρρυθμίσεις και η μελετημένη αποθήκευση συνδυάζουν ύπνο, μελέτη και παιχνίδι, αξιοποιώντας κάθε χώρο.",
+    "ru": "Входящий в группу Homes бренд Mistral создаёт мебель для детей и подростков с 1987 года. Цвет, гибкие планировки и продуманные системы хранения объединяют сон, учёбу и игру, помогая использовать пространство комнаты."
+  },
+  "sources": [
+    "https://www.homes.it/en/mistral/",
+    "https://www.homes.it/en/history/",
+    "https://www.mistralbedrooms.com/childrens-and-teenagers-bedroom-production/"
+  ],
+  "researched": "2026-11-08"
 }

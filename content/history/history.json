@@ -1,0 +1,100 @@
+[
+  {
+    "file": "01.jpg",
+    "period": {
+      "en": "1984–1999",
+      "el": "1984–1999",
+      "ru": "1984–1999"
+    },
+    "caption": {
+      "en": "Nicosia showroom, later a Natuzzi Italia store.",
+      "el": "Κατάστημα Λευκωσίας, αργότερα κατάστημα Natuzzi Italia.",
+      "ru": "Салон в Никосии, позднее — магазин Natuzzi Italia."
+    },
+    "source": "https://taf.com.cy/our-history"
+  },
+  {
+    "file": "02.jpg",
+    "period": {
+      "en": "1990s",
+      "el": "Δεκαετία 1990",
+      "ru": "1990-е"
+    },
+    "caption": {
+      "en": "At a local furniture fair.",
+      "el": "Συμμετοχή σε τοπική έκθεση επίπλων.",
+      "ru": "Участие в местной мебельной выставке."
+    },
+    "source": "https://taf.com.cy/our-history"
+  },
+  {
+    "file": "03.jpg",
+    "period": {
+      "en": "Early 1990s",
+      "el": "Αρχές δεκαετίας 1990",
+      "ru": "Начало 1990-х"
+    },
+    "caption": {
+      "en": "First Natuzzi Italia store in Limassol.",
+      "el": "Πρώτο κατάστημα Natuzzi Italia στη Λεμεσό.",
+      "ru": "Первый магазин Natuzzi Italia в Лимассоле."
+    },
+    "source": "https://taf.com.cy/our-history"
+  },
+  {
+    "file": "04.jpg",
+    "period": {
+      "en": "Late 1990s",
+      "el": "Τέλη δεκαετίας 1990",
+      "ru": "Конец 1990-х"
+    },
+    "caption": {
+      "en": "Takis with Andreas, Irene and Georgia.",
+      "el": "Ο Τάκης με τον Ανδρέα, την Ειρήνη και τη Γεωργία.",
+      "ru": "Такис с Андреасом, Ириной и Георгией."
+    },
+    "source": "https://taf.com.cy/our-history"
+  },
+  {
+    "file": "05.jpg",
+    "period": {
+      "en": "2004",
+      "el": "2004",
+      "ru": "2004"
+    },
+    "caption": {
+      "en": "Larnaca opening with Alessandro Calligaris and Ambassador Gerardo Lafranceska.",
+      "el": "Εγκαίνια Λάρνακας με Alessandro Calligaris και πρέσβη Gerardo Lafranceska.",
+      "ru": "Открытие в Ларнаке с Алессандро Каллигарисом и послом Джерардо Лафранческа."
+    },
+    "source": "https://taf.com.cy/our-history"
+  },
+  {
+    "file": "06.jpg",
+    "period": {
+      "en": "2007",
+      "el": "2007",
+      "ru": "2007"
+    },
+    "caption": {
+      "en": "Poliform store-in-store opens in Nicosia.",
+      "el": "Εγκαίνια Poliform store-in-store στη Λευκωσία.",
+      "ru": "Открытие Poliform store-in-store в Никосии."
+    },
+    "source": "https://taf.com.cy/our-history"
+  },
+  {
+    "file": "07.jpg",
+    "period": {
+      "en": "March 2019",
+      "el": "Μάρτιος 2019",
+      "ru": "Март 2019"
+    },
+    "caption": {
+      "en": "Nicosia Calligaris opening with Stefano Uliana and Ambassador Andrea Cavallari.",
+      "el": "Εγκαίνια Calligaris Λευκωσίας με Stefano Uliana και πρέσβη Andrea Cavallari.",
+      "ru": "Открытие Calligaris в Никосии со Стефано Улианой и послом Андреа Каваллари."
+    },
+    "source": "https://taf.com.cy/our-history"
+  }
+]

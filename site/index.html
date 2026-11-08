@@ -31,7 +31,16 @@
       </nav>
       <div class="header-end">
         <div class="lang" id="lang" role="group" aria-label="Language"></div>
-        <button class="btn-line" data-book data-i18n="nav.book"></button>
+        <div class="contact-menu" id="contactMenu">
+          <button class="btn-line contact-trigger" id="contactTrigger" type="button" data-contact-toggle aria-label="Contact us" aria-expanded="false" aria-controls="contactOptions">
+            <span class="contact-label" data-i18n="nav.contact">Contact us</span>
+            <span class="contact-caret" aria-hidden="true"></span>
+          </button>
+          <div class="contact-options" id="contactOptions" hidden>
+            <button type="button" data-book data-i18n="nav.book">Book an appointment</button>
+            <button type="button" data-contact data-i18n="nav.contactUs">Contact us</button>
+          </div>
+        </div>
         <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
       </div>
     </div>
