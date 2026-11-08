@@ -27,7 +27,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build # content/ → site/img/{brands,inspiration} + site/data/catalog.js
+      - run: npm run build # content/ → site/img/{brands,inspiration,history} + site/data/catalog.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

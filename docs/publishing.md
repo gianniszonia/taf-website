@@ -13,7 +13,7 @@ How to publish this project to GitHub and keep it updated. Written for AI agents
 
 `.github/workflows/pages.yml` runs on every push to `main` (and manually via *Actions → Deploy to GitHub Pages →
 Run workflow*): `npm ci` → `npm run build` → uploads `site/` → deploys to Pages. Generated files are therefore
-**not** committed — GitHub builds them. A deploy takes ~2–3 minutes.
+**not** committed — GitHub builds them. Build and deployment can take several minutes.
 
 ```bash
 gh run list --workflow pages.yml --limit 3         # status of recent deploys
@@ -36,7 +36,7 @@ Committed: `content/` (the photos + JSON — the source of truth), `site/` sourc
 `data/i18n.js`, logos), `scripts/`, docs, `package.json`, `package-lock.json`, `.claude/launch.json`.
 
 Ignored by `.gitignore` (generated or installed — never commit them):
-`node_modules/`, `site/img/brands/`, `site/img/inspiration/`, `site/data/catalog.js`.
+`node_modules/`, `site/img/brands/`, `site/img/inspiration/`, `site/img/history/`, `site/data/catalog.js`.
 After cloning, run `npm install && npm run build` to regenerate them.
 
 ## Prerequisites (check before doing anything)
@@ -93,13 +93,13 @@ Rules for agents:
 
 1. **Only commit and push when the owner asks** ("publish", "push", "commit"). Don't push on your own initiative.
 2. Work on `main` only if the owner asked for a direct publish; for larger changes create a branch
-   (`git switch -c <topic>`), push it (`git push -u origin <topic>`) and open a PR (`gh pr create --fill`) — then
+   (`git switch -c codex/<topic>`), push it (`git push -u origin <topic>`) and open a PR (`gh pr create --fill`) — then
    tell the owner the PR link.
 3. Never force-push `main` (`git push --force`), rewrite published history, or delete the remote repository.
 4. Never commit secrets, tokens, `.env` files, or `node_modules/`.
 5. Commit messages: imperative, one-line summary (≤ 72 chars), optional body explaining *why*.
    If your tool requires an attribution trailer (e.g. `Co-Authored-By:`), add it at the end of the message.
-6. Photos are large: keep single files well under GitHub's 100 MB limit (current photos are ≤ ~2 MB each).
+6. Photos are large: keep single files well under GitHub's 100 MB limit (verify new source files before committing).
    If `content/` ever grows past ~1 GB, discuss Git LFS with the owner before adding more.
 
 ## Checking the published state

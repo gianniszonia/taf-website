@@ -1,150 +1,80 @@
-# AGENTS.md — TAF website concept
+# TAF website — guide for agents and contributors
 
-Guide for AI coding agents (Codex, Claude Code, etc.) and humans picking up this project.
-Read this first, then the files in `docs/` for detail.
+Independent redesign demo for Takis Angelides Furnihome (founded 1965). The original agency site is https://taf.com.cy; this project is a separate static site. The aim is quiet luxury: big, sharp room photography, very little text, and an appointment offered as a service, never pushed.
 
-| Doc | What it covers |
-|---|---|
-| [content/README.md](content/README.md) | How to add brands, products and inspiration projects (the manual workflow) |
-| [docs/design.md](docs/design.md) | Visual system, page structure, the client's taste and decisions (fonts, hero, images) |
-| [docs/history.md](docs/history.md) | Chronological log of what was tried, what was reverted, and fixes that failed — incl. the abandoned scrapers |
-| [docs/publishing.md](docs/publishing.md) | How to commit, push and publish to GitHub (private repo `gianniszonia/taf-website`) |
-| [README.md](README.md) | Short human-facing overview and run commands |
+Read before changing anything:
+- [content/ADDING-IMAGES.md](content/ADDING-IMAGES.md): where photos go.
+- [content/README.md](content/README.md): content folders and text rules.
+- [docs/design.md](docs/design.md): current design, page by page.
+- [docs/history.md](docs/history.md): earlier attempts and client feedback. Check it before reversing a decision.
+- [docs/publishing.md](docs/publishing.md): deployment.
 
-## What this is
+## Run and structure
 
-A concept website for **Takis Angelides Furnihome (TAF)**, a Cypriot family furniture retailer (founded 1965,
-four showrooms: Nicosia, Limassol, Larnaca, Paphos) that imports European brands. The live site is
-https://taf.com.cy (Drupal, built by another agency) — this repo is an independent redesign demo, not that site.
+Node 20+. `npm ci`, `npm run build` (can take several minutes), `npm start` → http://localhost:5173. `.claude/launch.json` defines this server as `taf-demo`. There is no framework, bundler or test runner; Sharp is the only dependency.
 
-Goals set by the client: simple, elegant, informational site; easy browsing of each brand's products;
-"Book an appointment" as the main action; English / Greek / Russian; **content added manually** as photos in folders.
+| Path | What it is |
+| --- | --- |
+| `content/` | Source of truth: photographs, brand/project/history JSON, allowlists |
+| `scripts/build.mjs` | Builds `site/img/{brands,inspiration,history}/` and `site/data/catalog.js`; skips photos under 1600px |
+| `scripts/serve.mjs` | Dependency-free static server for `site/` |
+| `site/index.html` | Page shell, fonts, header |
+| `site/js/app.js` | All pages (`P.*`), router, viewer, appointment and contact forms |
+| `site/css/styles.css` | One stylesheet: tokens, sections, responsive rules, motion |
+| `site/data/content.js` | Showrooms, opening hours, contacts, social links |
+| `site/data/i18n.js` | Interface text in en/el/ru |
+| `site/img/logos/` | Logos and favicon (hand-maintained) |
+| `docs/` | Design, history, publishing; `docs/provenance/` holds sources and 2026 import records |
 
-## Run it
+Generated output (`site/img/brands|inspiration|history/`, `site/data/catalog.js`) is gitignored. Never edit it by hand; rebuild instead. Keep temporary helpers (mock-ups, scripts, servers) outside the project. Low-resolution originals that were removed live in `../TAF Website - archive/`, not in the project.
 
-Requirements: Node 20+ (tested on 20.14, Windows). One dependency: `sharp` (image processing). No Python needed.
+## Current content (8 November 2026)
 
-```bash
-npm install
-npm run build   # content/ → site/img/{brands,inspiration}/*.webp + site/data/catalog.js  (after ANY content change)
-npm start       # static server on http://localhost:5173   (scripts/serve.mjs, no deps)
-```
+- **Brands:** 16 in total, 9 with galleries. The other 7 (`cane-line`, `connubia`, `guerra-vanni`, `inside`, `magniflex`, `mistral`, `olivo-groppo`) appear as outside links.
+- **Photos:** 89 products, 20 inspiration projects and 7 archive photos.
+- **Selected pieces:** `content/selected-pieces.json` holds 55 entries. The homepage draws 12 per page load, excluding photos already used elsewhere on the homepage.
+- **Publication allowlist:** `content/editorial-selection.json`. The build also requires each photo to be at least 1600px wide.
+- **Not published:** `content/collection-review/` holds unattributed carpets and curtains kept at the owner's request.
 
-`.claude/launch.json` defines the same server as `taf-demo` for Claude Code's preview pane.
-No tests, no bundler, no framework: `site/` is plain HTML/CSS/JS served as-is.
+## Routes
 
-## Publishing (GitHub)
+`#/`, `#/products` (`?c=<Category>&b=<brand-id>`), `#/brands`, `#/brand/<id>` (`?c=<Category>` filter), `#/inspiration`, `#/inspiration/<slug>`, `#/showrooms`, `#/story`, `#/appointment` (`?store=`, `?interest=`, `?piece=`) and `#/contact`. Legacy `#/house…` routes redirect, and unknown items fall back to their index.
 
-The project lives in the **public** repo `https://github.com/gianniszonia/taf-website` (branch `main`) and is
-live at **https://gianniszonia.github.io/taf-website/** via GitHub Pages: `.github/workflows/pages.yml` builds and
-deploys `site/` on every push to `main` (~2–3 min). To publish changes: `npm run build` (check it works) →
-`git add -A` → review `git diff --cached --stat` → `git commit -m "…"` → `git push` → `gh run list --workflow pages.yml`.
-Only push when the owner asks; never force-push `main`. The page has `noindex, nofollow` (brand image rights are not
-cleared) — keep it. Generated files (`site/img/brands|inspiration`, `site/data/catalog.js`, `node_modules`) are
-gitignored — GitHub builds them; rebuild locally after cloning. Full guide: [docs/publishing.md](docs/publishing.md).
+## Decisions to keep
 
-## Content model (the important part)
+**Pages and flow**
+- **Section links:** the Selected pieces heading has its counter and arrows just after the title, and "All products" at the far right. Links to the Showrooms page from the homepage and the contact page read "View showrooms".
+- **Home order:** full-screen hero → story statement with scroll-triggered counters → full-bleed Our Brands photo with hoverable names → Selected pieces (two large cards per view) → three inspiration projects → showrooms → invitation photo with "Book an appointment".
+- **Appointment:** booking is its own calm page, reached only by choice. Never put it in a modal, drawer or pop-up, and never in the hero. Contact is its own page too.
+- **One destination, one name:** every link to the appointment page reads "Book an appointment" and every link to contact reads "Contact us". Page titles match the menu: Our Brands, Products, Inspiration, Showrooms, Our Story. Brand and product websites are both "Official website", in the same ink colour as "Book an appointment" (no greyed-out secondary links).
+- **Header:** Collection · Inspiration · Showrooms · Our Story, then the language switch (kept clearly readable at the client's request) and plain links to the two pages. "Collection" opens a panel aligned under its button: brands, then product categories (two columns each), and a rotating brand photo captioned "New in <brand>" that reaches the right edge of "Contact us" and ends level with the last list item, on hover, click or keyboard; Escape closes it and the header turns solid while it is open. Below 1360px there is no Collection panel: the menu button opens a list with Our Brands and Products as separate items.
+- **Products page:** every published piece. On wide screens, category and brand filters sit in a sticky left sidebar with no inner scrollbar: when it is taller than the screen it scrolls with the page until its last option shows. Each list is ordered by size, showing the top six plus "Show N more". The chosen option always stays visible, counts follow the other filter, and empty options are disabled. Below 1080px the filters move above the products as two scrollable rows of chips, and empty options are hidden. Filters live in the URL (`?c=`, `?b=`) and update in place. Cards open the usual product viewer.
+- **Inspiration:** the first project is shown full screen, then a mosaic built from blocks that always fill whole rows (no gaps). On desktop, hovering a tile fades through more of its photos. Project pages show the description and architect credit above the photos, always open, and list "Brands in this project" from their own description.
+- **Product viewer:** photo, title, brand, category, "Book an appointment" and the official website only. Viewer arrows are dark on light buttons, visible on any photo.
 
-**One photo = one product post.** There is no scraping and no product metadata beyond what the folder gives:
+**Design**
+- **Typography:** Noto Serif Display for headings (hero at most 80px; the client found larger "too heavy"), Manrope for body text. Headings use balanced line breaks, so no single word sits alone.
+- **Motion:** slow hero zoom and cross-fades, quiet scroll reveals, slight image zoom on hover. Respect reduced-motion settings.
+- **Images in code:** render photos with `photo(image, alt, SIZES.x)` so every size is offered (`srcset`). The build records the widths, and only photos at least 1600px wide are published.
+- **Photography:** sharp room settings only, never studio cut-outs. Archive photos and complete inspiration galleries are the exceptions. Our Story has no appointment invitation.
 
-```
-content/brands/<id>/<Category>/<Product name>.jpg   → product: name (file name), category (folder), brand (parent)
-content/brands/<id>/brand.json                       → brand name, origin (country), founded, website, intro{en,el,ru}, speciality{en,el,ru}
-content/brands/<id>/cover.jpg / feature.jpg          → brand hero + landing slideshow / home brand-list image
-content/brands/<id>/links.json                       → optional { "Category/Name": "https://product-page" }
-content/brands/<id>/names.json                       → optional { "Category/Source name": { en, el, ru } } display titles
-content/brands/order.json                            → brand order
-content/inspiration/<Project title>/NN.jpg           → inspiration project (first photo = cover)
-content/inspiration/order.json                       → project order (first 3 shown on the home page)
-```
+## Hard rules
 
-Clicking a product shows only: photo, product name, brand (link), category, **Book an appointment**, **Visit website**
-(product link from `links.json`, else the brand website). This minimalism is deliberate — the client does not have
-descriptions/designers/dimensions for all products, so none are shown for any. Do not add fields back without asking.
+1. **Content is maintained by hand.** No scrapers, spoofed user agents or bot-protection evasion. The 2026 imports are provenance, not a workflow.
+2. **Three languages.** Every interface text and visitor-facing description exists in English, Greek and Russian. Never invent founding years (Inside by TAF has none), product specifications or designers.
+3. **Architect credits.** Keep them, with their links, wherever the original project credited them.
+4. **Demo settings.** Keep the demo notices, `noindex, nofollow` and relative asset URLs. Forms must send nothing.
+5. **Owner-only actions.** Commit, push or publish only when the owner asks, and never force-push. GitHub Pages builds `site/` from `main` in the public repository `gianniszonia/taf-website`.
 
-A brand with zero product photos has no page; it appears under "Also in our showrooms" and in the footer.
-Full instructions for content editors: [content/README.md](content/README.md).
+## Verification
 
-## Layout
-
-```
-content/                  SOURCE OF TRUTH (hand-maintained photos + small JSON files)
-scripts/build.mjs         content/ → optimised images + site/data/catalog.js
-scripts/serve.mjs         tiny static server
-site/
-  index.html              shell; loads data/content.js, data/i18n.js, data/catalog.js, js/app.js
-  js/app.js               whole app: hash router, pages, i18n, hero slideshow, rotating picks, viewer, booking sheet
-  css/styles.css          all styles (design tokens at top)
-  data/content.js         showrooms, opening hours (from Google, Nov 2026), timeline — hand-edited
-  data/i18n.js            ALL interface text in en / el / ru — hand-edited
-  data/catalog.js         GENERATED — never edit by hand (gitignored)
-  img/logos/              TAF logo (dark + white) and favicon; brand logos are intentionally NOT used
-  img/brands/, img/inspiration/   GENERATED (gitignored)
-```
-
-## Routes (hash router in `site/js/app.js`)
-
-`#/` home · `#/brands` · `#/brand/<id>` (`?c=<Category>` filter) · `#/inspiration` · `#/inspiration/<project-slug>` ·
-`#/showrooms` · `#/story`. Legacy `#/houses`, `#/house/<id>` redirect. Unknown/empty brand → brands overview;
-unknown project → inspiration overview.
-
-Home sections: hero slideshow (brand covers) → statement → brand index with hover preview
-(`feature` images) → **Selected pieces** (4 cards; one card cross-fades to another product every ~3.8 s, pool =
-all products, brands interleaved, shuffled per visit; pauses on hover / when the viewer is open / tab hidden) →
-inspiration teaser (first 3 projects) → appointment band → showrooms.
-
-## Current content (2026-11-07)
-
-| Brand | Products | Notes |
-|---|---|---|
-| Poliform | 14 | links.json from Poliform product pages |
-| Calligaris | 12 | links.json |
-| Porada | 12 | links.json |
-| Natuzzi Italia | 8 | TAF's own photos (natuzzi.com cannot be scraped) |
-| Natuzzi Editions | 6 | TAF's own photos |
-| 11 others (Cane-line, Connubia, Noctis, Magniflex, Orme, Mistral, Home Cucine, Fantoni, Olivo & Groppo, Guerra Vanni, Inside) | 0 | brand.json only |
-
-14 inspiration projects (4–12 photos each), curated from https://taf.com.cy/inspiration (TAF's own work).
-Products were kept only if their single photo is a wide (≥1200 px, ratio 1.25–2.2), non-close-up room shot;
-eight close-up/odd products were removed by eye for consistency.
-
-## Hard rules (do not break)
-
-1. **No scraping.** Partner-site scrapers were built, partly worked, and were removed at the client's request
-   (see docs/history.md). Content is added by hand to `content/`. If automation is ever wanted again, ask partners
-   for official feeds/media kits; never spoof a browser User-Agent or evade bot protection.
-2. **`content/` is the source of truth; `site/data/catalog.js`, `site/img/brands/`, `site/img/inspiration/` are build output.**
-3. **One image style site-wide:** room-set photography, landscape, consistent. No studio cut-outs, no close-ups,
-   no brand logos. The client explicitly asked for consistency ("keep the best images").
-4. **Every user-visible string must exist in en, el and ru** (`site/data/i18n.js`; brand texts in `brand.json`).
-   Fonts must support Latin + Greek + Cyrillic.
-5. **Do not lean on "Italian".** Not all brands are Italian (Cane-line = Denmark, Inside = Cyprus; Mistral is Italy, verified from Homes Group).
-   Copy is about TAF. Never use "L'arte di abitare" (a real company's name).
-6. The booking form is a **demo**: validates and confirms, sends nothing. Keep the "Demonstration only" note.
-7. Keep the product viewer minimal (see Content model).
-
-## Verifying changes (what has worked)
-
-- `npm run build`, then check `#/`, `#/brands`, `#/brand/poliform`, `#/inspiration`, `#/inspiration/nordic-spirit`,
-  `#/showrooms`, `#/story` in all three languages, at ~1920×1031, 1366×768 and 375×812.
-- From the browser console, HEAD-request every `img` src and every image in `TAF_CATALOG` (brands + inspiration).
-- Test the rotating picks over ~15 s: one card changes at a time, no card stays faded (`.card.swap`), and clicking a
-  card opens the product shown on it.
-- **Claude Code's preview pane is often hidden**: IntersectionObserver/lazy images are throttled, image decoding can
-  stall and screenshots lag one frame. `app.js` has a reveal fallback and the picks rotation has a 1.5 s timeout for
-  that reason. When screenshotting, force-load images and add `.in` to `.rv, .wipe, .card`, or measure with JS.
-- Hero title clipping: measure glyph bottoms vs `.line-mask` bottoms with a `Range`, after the reveal (~2.5 s).
-- Deleting files from Bash: the harness blocks `rm` on a bare `"$var/..."`; use `"${var:?}"` or literal paths.
-
-## Client preferences (from feedback so far)
-
-Simplicity, elegance, consistency; few subtle animations (wipe reveals, gentle parallax, 0.9 s
-hero cross-fade, **no zoom on hero images**, picks rotation); hero title "Furnishing homes since 1965." in
-**Noto Serif Display, weight 330** (400 was too heavy, Manrope sans rejected); darker scrim on bright photos;
-"Book an appointment" top-right; visible language switch; footer lists **all** brands; no footer tagline.
-Details in [docs/design.md](docs/design.md).
-
-Product title overrides: imported filenames stay as internal IDs. names.json supplies clean model names
-or translated brand + type labels where the source name is an opaque code/placeholder. Cards, image
-alt text, viewer headings and booking notes must use the display title; viewer lookup and product links
-continue to use the original category/name key. Do not show raw filenames when an override exists.
+- **Build and syntax:** run `npm run build`; it must show no new skipped photos unless intended. Syntax-check changed JavaScript with `node --check`.
+- **Pages to check:** home, Products (filters and Show more), the Collection menu, brands index and a brand page, inspiration index and a project, showrooms, story, appointment and contact.
+- **Languages and widths:** EN/EL/RU at desktop (including about 1366px for the Russian header), tablet and phone widths.
+- **Behaviour:**
+  - no sideways overflow;
+  - Back/Forward restores scroll position;
+  - all 12 Selected pieces are reachable;
+  - the forms send nothing;
+  - reduced motion still works.
+- **Use a visible browser.** Hidden preview panes slow down lazy images and scroll observers, which can look like a bug when it isn't.

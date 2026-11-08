@@ -1,13 +1,10 @@
 {
   "name": "taf-website",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "build": "node scripts/build.mjs",
     "start": "node scripts/serve.mjs"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "description": "TAF website concept",
   "dependencies": {

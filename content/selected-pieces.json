@@ -1,0 +1,277 @@
+[
+  {
+    "brand": "natuzzi-italia",
+    "category": "Sofas",
+    "name": "Argo"
+  },
+  {
+    "brand": "natuzzi-italia",
+    "category": "Sofas",
+    "name": "Borghese"
+  },
+  {
+    "brand": "natuzzi-italia",
+    "category": "Sofas",
+    "name": "Cava"
+  },
+  {
+    "brand": "natuzzi-italia",
+    "category": "Sofas",
+    "name": "Diesis"
+  },
+  {
+    "brand": "natuzzi-italia",
+    "category": "Sofas",
+    "name": "Herman"
+  },
+  {
+    "brand": "natuzzi-italia",
+    "category": "Sofas",
+    "name": "Iago"
+  },
+  {
+    "brand": "natuzzi-italia",
+    "category": "Sofas",
+    "name": "Melpot"
+  },
+  {
+    "brand": "natuzzi-italia",
+    "category": "Sofas",
+    "name": "Tempo"
+  },
+  {
+    "brand": "poliform",
+    "category": "Sofas",
+    "name": "Bellport - 2"
+  },
+  {
+    "brand": "poliform",
+    "category": "Sofas",
+    "name": "Bristol"
+  },
+  {
+    "brand": "poliform",
+    "category": "Sofas",
+    "name": "Mondrian"
+  },
+  {
+    "brand": "poliform",
+    "category": "Sofas",
+    "name": "Saint Germain"
+  },
+  {
+    "brand": "poliform",
+    "category": "Sofas",
+    "name": "Sydney"
+  },
+  {
+    "brand": "poliform",
+    "category": "Sofas",
+    "name": "Westside"
+  },
+  {
+    "brand": "poliform",
+    "category": "Dining Chairs",
+    "name": "Sophie"
+  },
+  {
+    "brand": "poliform",
+    "category": "Beds",
+    "name": "Dream"
+  },
+  {
+    "brand": "poliform",
+    "category": "Beds",
+    "name": "Kelly"
+  },
+  {
+    "brand": "poliform",
+    "category": "Kitchens",
+    "name": "Artex - 3"
+  },
+  {
+    "brand": "poliform",
+    "category": "Kitchens",
+    "name": "Artex"
+  },
+  {
+    "brand": "poliform",
+    "category": "Wardrobes",
+    "name": "Wardrobe"
+  },
+  {
+    "brand": "porada",
+    "category": "Sofas",
+    "name": "Abacus"
+  },
+  {
+    "brand": "porada",
+    "category": "Sofas",
+    "name": "Kirki"
+  },
+  {
+    "brand": "porada",
+    "category": "Sofas",
+    "name": "Klem"
+  },
+  {
+    "brand": "porada",
+    "category": "TV Units & Wall Systems",
+    "name": "Aria"
+  },
+  {
+    "brand": "porada",
+    "category": "Dining Tables",
+    "name": "Infinity"
+  },
+  {
+    "brand": "porada",
+    "category": "Beds",
+    "name": "Klem Bed"
+  },
+  {
+    "brand": "calligaris",
+    "category": "Sofas",
+    "name": "Edgar"
+  },
+  {
+    "brand": "calligaris",
+    "category": "Sofas",
+    "name": "Equipe"
+  },
+  {
+    "brand": "calligaris",
+    "category": "Sofas",
+    "name": "Landa"
+  },
+  {
+    "brand": "calligaris",
+    "category": "Sofas",
+    "name": "Le Marais"
+  },
+  {
+    "brand": "calligaris",
+    "category": "Dining Chairs",
+    "name": "Abrey"
+  },
+  {
+    "brand": "calligaris",
+    "category": "Dining Tables",
+    "name": "Alpha"
+  },
+  {
+    "brand": "calligaris",
+    "category": "Beds",
+    "name": "Kilian Round"
+  },
+  {
+    "brand": "natuzzi-editions",
+    "category": "Sofas",
+    "name": "Dalt"
+  },
+  {
+    "brand": "natuzzi-editions",
+    "category": "Sofas",
+    "name": "Kartun"
+  },
+  {
+    "brand": "natuzzi-editions",
+    "category": "Sofas",
+    "name": "Wessex"
+  },
+  {
+    "brand": "natuzzi-editions",
+    "category": "Coffee & Side Tables",
+    "name": "Cabaret"
+  },
+  {
+    "brand": "natuzzi-editions",
+    "category": "Beds",
+    "name": "Cut"
+  },
+  {
+    "brand": "natuzzi-editions",
+    "category": "Beds",
+    "name": "Giunca"
+  },
+  {
+    "brand": "fantoni",
+    "category": "Office Desks",
+    "name": "MeetUp Fantoni1"
+  },
+  {
+    "brand": "fantoni",
+    "category": "Office Desks",
+    "name": "MeetUp Fantoni11"
+  },
+  {
+    "brand": "home-cucine",
+    "category": "Kitchens",
+    "name": "AURA"
+  },
+  {
+    "brand": "home-cucine",
+    "category": "Kitchens",
+    "name": "Cartesia"
+  },
+  {
+    "brand": "home-cucine",
+    "category": "Kitchens",
+    "name": "PALU - 2"
+  },
+  {
+    "brand": "noctis",
+    "category": "Beds",
+    "name": "Cama"
+  },
+  {
+    "brand": "noctis",
+    "category": "Beds",
+    "name": "Leonte"
+  },
+  {
+    "brand": "noctis",
+    "category": "Beds",
+    "name": "So Casual"
+  },
+  {
+    "brand": "orme",
+    "category": "TV Units & Wall Systems",
+    "name": "Day 09"
+  },
+  {
+    "brand": "orme",
+    "category": "Beds",
+    "name": "Brigitta"
+  },
+  {
+    "brand": "orme",
+    "category": "Beds",
+    "name": "Demetra"
+  },
+  {
+    "brand": "orme",
+    "category": "Beds",
+    "name": "Deva"
+  },
+  {
+    "brand": "orme",
+    "category": "Beds",
+    "name": "Flo"
+  },
+  {
+    "brand": "orme",
+    "category": "Beds",
+    "name": "Miranda"
+  },
+  {
+    "brand": "orme",
+    "category": "Wardrobes",
+    "name": "1"
+  },
+  {
+    "brand": "orme",
+    "category": "Wardrobes",
+    "name": "4"
+  }
+]

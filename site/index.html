@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Takis Angelides Furnihome — Furnishing homes since 1965</title>
   <meta name="description" content="Natuzzi, Poliform, Porada, Calligaris, Cane-line and more — Europe’s finest furniture makers in four showrooms across Cyprus, since 1965.">
-  <meta name="theme-color" content="#f5f3ef">
+  <meta name="theme-color" content="#f6f4f0">
   <!-- concept demo: keep it out of search engines so it never competes with the real taf.com.cy -->
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="img/logos/taf-acronym.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Noto+Serif+Display:ital,wght@0,200..500;1,200..300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Noto+Serif+Display:wght@300..400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -24,23 +24,21 @@
         <img class="logo-light" src="img/logos/taf-white.svg" alt="" width="160" height="47" aria-hidden="true">
       </a>
       <nav class="nav" id="nav" aria-label="Main">
-        <a href="#/brands" data-i18n="nav.houses"></a>
+        <!-- Wide screens: one "Collection" menu with products and brands. Below 1360px the menu lists both directly. -->
+        <div class="collection" id="collectionMenu">
+          <button class="collection-trigger" id="collectionTrigger" type="button" aria-expanded="false" aria-controls="collectionPanel"><span data-i18n="nav.collection"></span><span class="caret" aria-hidden="true"></span></button>
+          <div class="collection-panel" id="collectionPanel" hidden></div>
+        </div>
+        <a class="menu-only" href="#/brands" data-i18n="nav.houses"></a>
+        <a class="menu-only" href="#/products" data-i18n="nav.products"></a>
         <a href="#/inspiration" data-i18n="nav.inspiration"></a>
         <a href="#/showrooms" data-i18n="nav.showrooms"></a>
         <a href="#/story" data-i18n="nav.about"></a>
       </nav>
       <div class="header-end">
         <div class="lang" id="lang" role="group" aria-label="Language"></div>
-        <div class="contact-menu" id="contactMenu">
-          <button class="btn-line contact-trigger" id="contactTrigger" type="button" data-contact-toggle aria-label="Contact us" aria-expanded="false" aria-controls="contactOptions">
-            <span class="contact-label" data-i18n="nav.contact">Contact us</span>
-            <span class="contact-caret" aria-hidden="true"></span>
-          </button>
-          <div class="contact-options" id="contactOptions" hidden>
-            <button type="button" data-book data-i18n="nav.book">Book an appointment</button>
-            <button type="button" data-contact data-i18n="nav.contactUs">Contact us</button>
-          </div>
-        </div>
+        <a class="header-link" href="#/appointment" data-i18n="nav.book">Book an appointment</a>
+        <a class="header-link" href="#/contact" data-i18n="nav.contact">Contact us</a>
         <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
       </div>
     </div>
@@ -49,7 +47,6 @@
   <main id="main" tabindex="-1"></main>
   <footer class="footer" id="footer"></footer>
 
-  <dialog class="sheet" id="book" aria-labelledby="bookTitle"></dialog>
   <dialog class="piece" id="piece"></dialog>
 
   <script src="data/content.js"></script>

@@ -1,0 +1,119 @@
+{
+  "note": "Publication allowlist: Category/Name of each approved room photograph (at least 1600px wide). Empty list = website link only. See content/ADDING-IMAGES.md.",
+  "brands": {
+    "natuzzi-italia": [
+      "Sofas/Argo",
+      "Sofas/Borghese",
+      "Sofas/Cava",
+      "Sofas/Diesis",
+      "Sofas/Herman",
+      "Sofas/Iago",
+      "Sofas/Melpot",
+      "Sofas/Tempo",
+      "Armchairs/Botanic",
+      "Dining Tables/Kendo",
+      "Dining Tables/Ombra",
+      "Beds/Diamante",
+      "Beds/Dolcevita",
+      "Beds/Fenica"
+    ],
+    "poliform": [
+      "Sofas/Bellport - 2",
+      "Sofas/Bristol",
+      "Sofas/Mondrian",
+      "Sofas/Saint Germain",
+      "Sofas/Sydney",
+      "Sofas/Westside",
+      "Dining Chairs/Sophie",
+      "Beds/Dream",
+      "Beds/Kelly",
+      "Kitchens/Artex - 3",
+      "Kitchens/Artex",
+      "Wardrobes/Wardrobe",
+      "Dining Chairs/Ventura",
+      "Beds/Park",
+      "Kitchens/Alea pro 2",
+      "Kitchens/Shape"
+    ],
+    "porada": [
+      "Sofas/Abacus",
+      "Sofas/Kirki",
+      "Sofas/Klem",
+      "TV Units & Wall Systems/Aria",
+      "Dining Tables/Infinity",
+      "Beds/Klem Bed",
+      "Sofas/Arena",
+      "Sofas/Koji",
+      "TV Units & Wall Systems/Ubiqua",
+      "Beds/Killian"
+    ],
+    "calligaris": [
+      "Sofas/Edgar",
+      "Sofas/Equipe",
+      "Sofas/Landa",
+      "Sofas/Le Marais",
+      "Dining Chairs/Abrey",
+      "Dining Tables/Alpha",
+      "Beds/Kilian Round",
+      "Sofas/Loungey",
+      "Dining Tables/Icaro",
+      "Sideboards/Lake",
+      "Beds/Magenta"
+    ],
+    "cane-line": [],
+    "natuzzi-editions": [
+      "Sofas/Dalt",
+      "Sofas/Kartun",
+      "Sofas/Wessex",
+      "Coffee & Side Tables/Cabaret",
+      "Beds/Cut",
+      "Beds/Giunca",
+      "Sofas/Portento",
+      "Coffee & Side Tables/Low",
+      "Beds/Galattico",
+      "Beds/Morfeo"
+    ],
+    "connubia": [],
+    "fantoni": [
+      "Office Desks/MeetUp Fantoni1",
+      "Office Desks/MeetUp Fantoni11",
+      "Office Desks/MeetUp Fantoni6",
+      "Office Desks/Multipliceo7",
+      "Office Desks/WOODS FANTONI P18 scaled e1599820119597"
+    ],
+    "guerra-vanni": [],
+    "home-cucine": [
+      "Kitchens/AURA",
+      "Kitchens/Cartesia",
+      "Kitchens/PALU - 2",
+      "Kitchens/AURA - 2",
+      "Kitchens/Cartesia - 2",
+      "Kitchens/KLEE",
+      "Kitchens/PALU"
+    ],
+    "inside": [],
+    "magniflex": [],
+    "mistral": [],
+    "noctis": [
+      "Beds/Cama",
+      "Beds/Leonte",
+      "Beds/So Casual",
+      "Beds/So Ever",
+      "Beds/Sula"
+    ],
+    "olivo-groppo": [],
+    "orme": [
+      "TV Units & Wall Systems/Day 09",
+      "Beds/Brigitta",
+      "Beds/Demetra",
+      "Beds/Deva",
+      "Beds/Flo",
+      "Beds/Miranda",
+      "Wardrobes/1",
+      "Wardrobes/4",
+      "Beds/Ottavia",
+      "Wardrobes/3",
+      "Wardrobes/Wardrobes 372"
+    ]
+  }
+}

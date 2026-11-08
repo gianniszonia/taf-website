@@ -1,6 +1,6 @@
 # Project history — what was tried, what changed, what failed
 
-Chronological, newest last. Dates: all work happened on 2026-11-07 in one long session (Claude Code).
+Chronological, newest last. Earlier entries describe historical decisions and may be superseded by the current design guide.
 Useful for understanding *why* things are the way they are before changing them.
 
 ## Phase 1 — Research and first plan
@@ -124,9 +124,91 @@ Selected pieces; keep the best images; consistency; keep things at minimum."
 - Cane-line / Connubia (Shopify): every product request returned 429 — bot protection; would need Storefront API tokens.
 - Natuzzi: 403 to automated clients. Never evade with a spoofed User-Agent (blocked by the agent's safety classifier).
 
-## Open items
-- More products / better photos per brand (content team adds them to `content/brands/`), especially Natuzzi
-  Editions (6) and the 11 brands without photos.
-- Image-usage permission from every brand before going live (dealer media kits are the best source).
-- Real booking backend (email/calendar) — form is demo-only.
-- Hosting/deployment not set up (static site; any static host works after `npm run build`).
+## 8 November 2026 — expanded content and luxury editorial redesign
+
+- Published the initial expanded catalogue to GitHub Pages; subsequent redesign work remains local until publishing is requested.
+- Replaced the long brand list with a compact image selector, restrained headings, fullscreen atmospheric hero and consistent room photography. Current curation: 104 products across 11 galleries; five other brands remain external links.
+- Replaced rotating Selected pieces with 12 random photographs per document load from 60 approved room scenes, excluding photography already used on the homepage.
+- Added translated brand biographies and verified years, readable title overrides, contact form layout, custom booking controls, homepage logo scrolling and browser scroll restoration. Forms remain demos.
+- Unified scroll reveals, clickable-image feedback and reduced-motion behavior. Added scroll-triggered story counters, visible hero zoom and staged hero copy. These supersede the earlier no-zoom and rotating-picks decisions.
+- Expanded inspiration to all 22 source posts in source order, including eight missing projects and 123 new photos. Retained translated details and five linked architect credits. Removed index pagination.
+- Archive photos use taller center-top crops; removed the story appointment section and image enlarger.
+- Cleanup removed 426 unused images and 12 obsolete metadata/report files from the project (132,335,201 bytes), with a recovery copy outside the repository. Pruned 205 obsolete title/link entries. Preserved 22 explicitly requested unverified review photographs and source provenance. Updated contributor, content and design documentation; build now clears stale history output as well as brand/project output.
+
+## 8 November 2026 — quiet-luxury pass
+
+Client brief: "selling a vibe… big, bold images with minimal text… don't throw a book-an-appointment form in the user's face."
+
+- **Research:** reviewed Minotti, B&B Italia, Poliform, Molteni&C, Flexform, Baxter, Aman, Hermès, Bottega Veneta, Cartier and a Rolex retailer. None of the furniture houses asks for an appointment in the hero. Booking is a dedicated page, framed as a service.
+- **Appointment flow:** the booking moved from a slide-in drawer to `#/appointment`. It has a photograph, an invitation and three short numbered parts. Every former "Book an appointment" button now links there, carrying store, brand and piece context. The hero CTA became "Explore the brands".
+- **Homepage photography:**
+  - Our Brands is now a full-bleed photograph with the brand name overlaid, selectable by hover.
+  - Selected pieces show two large 3:2 cards per view.
+  - Inspiration leads with one wide project.
+  - The invitation is a full-width photograph at natural ratio, placed after the showrooms.
+- **Brand pages:** full-height heroes, a centred one-sentence introduction, a wide-then-pairs gallery rhythm, and a large "Next brand" link.
+- **Stylesheet:** rewritten as one coherent system, replacing six stacked override layers.
+  - Fewer type sizes, quiet text-link CTAs, and an AA-contrast muted grey.
+  - The language switch kept its client-requested visibility.
+  - The hero title is capped at 80px, after the earlier "too heavy/big" feedback.
+
+### Follow-up the same day: resolution, contact page, naming
+
+Client: "Use only high resolution images. That Cane-line one looks bad in full screen… make Contact us a page itself too. Make sure the namings are the same."
+
+- **Image resolution:** `scripts/build.mjs` now publishes only photographs at least 1600px wide. This supersedes the earlier "don't reject a sharp image solely for its pixel dimensions" rule.
+  - **Brands:** Cane-line (900–1080px) and Mistral (1280px) have no qualifying photos and became link-only.
+  - **Products:** Noctis So Pop, Porada Aida and Softbay, and Orme Day 11 and Day 20 were skipped.
+  - **Covers:** a cover or feature under the limit falls back to the brand's largest product photo.
+  - **Inspiration:** projects need at least three qualifying photos, so NICOSIA APARTMENT (1140px) and Inspiring Office Spaces (≤1001px) are not published. Classic Style Spaces and Stylish Home lost their small photos.
+  - **Result:** 9 galleries, 89 products, 20 projects; 55 of the 60 Selected pieces remain.
+- **Contact page:** Contact us is now `#/contact`, replacing the drawer that could open on top of the appointment page. The header dropdown became two plain links, "Book an appointment" and "Contact us". The menu button now appears below 1360px, so the Russian header fits.
+- **Naming:** one destination, one name.
+  - "Book an appointment" replaces "Arrange a visit", "See it in our showroom", "Make an appointment" and "Private consultation".
+  - "Contact us" is used everywhere.
+  - Page titles match the navigation (Our Brands, Inspiration, Showrooms, Our Story).
+  - Brand and product websites are both "Official website".
+  - Unused interface strings were removed.
+
+- **Balanced headlines:** headings use balanced line breaks, and the homepage statement breaks after its colon, so no word sits alone on the last line. Brand pages had been showing the short category tag ("office", "beds") instead of the full description; they now show the description. The contact form now starts below the page title, level with the contact details.
+
+- **Inspiration redesign** (chosen from five clickable mock-ups): a full-screen featured project followed by a gap-free editorial mosaic with a desktop hover preview; project pages gained "Brands in this project" from their own descriptions. Room filters and a long-scroll project story were set aside for now (too few projects for filters; the story would make 26-photo pages very long).
+
+### Project cleanup
+
+- **Archived photos:** 23 low-resolution originals that the build never published (76 files) were moved to `../TAF Website - archive/2026-11-08-low-resolution/`, keeping their folder paths. This covers Cane-line and Mistral photos, five single product photos, the NICOSIA APARTMENT and Inspiring Office Spaces projects, and small photos from Classic Style Spaces and Stylish Home. Each archived copy was checked byte-for-byte against its original before the original was removed. The allowlist, Selected pieces, Porada links and the inspiration order were updated to match.
+- **Provenance moved:** `content/imports/` and `docs/brand-sources.md` moved to `docs/provenance/`, so `content/` now holds only what the build uses.
+- **New guide:** `content/ADDING-IMAGES.md` explains where every kind of photo goes.
+- **Docs rewritten:** `README.md`, `AGENTS.md`, `CLAUDE.md` and `content/README.md` now describe the current structure and decisions.
+
+### Products page and Collection menu
+
+- Chosen from clickable mock-ups (three page layouts, three header approaches). The owner picked side filters and a Collection menu.
+- **Products page:** `#/products` lists all published pieces, with category and brand filters (sidebar on wide screens, chip rows on top below 1080px). Filters live in the URL, update in place, and empty combinations are disabled.
+- **Collection menu:** replaces Our Brands in the wide-screen header; its panel holds products by category and brands. Below 1360px the menu lists Our Brands and Products directly instead.
+
+### Refinements and publish
+
+- **Collection menu:**
+  - The panel starts under its button and lists brands, then products, two columns each.
+  - A rotating photo captioned "New in <brand>" reaches the right edge of "Contact us" and ends level with the last list item.
+- **Products sidebar:**
+  - Each list shows its top six by size, with "Show N more".
+  - The sidebar has no inner scrollbar: it scrolls with the page until its last option shows.
+- **Selected pieces heading:** the arrows sit beside the title, "All products" is at the far right, and everything is aligned to the title's optical middle.
+- **Homepage spacing:** one equal gap between all sections, `--home-space`, 88–176px. The owner found 144px slightly tight.
+- **Wording:**
+  - The Showrooms link reads "View showrooms".
+  - "Official website" uses the same ink colour as "Book an appointment".
+  - Brand pages show their full description.
+  - The contact form starts below the title.
+- **Optimisation:**
+  - The build records each image size's width, and the site serves responsive `srcset` images everywhere. The wide brand-gallery tiles now get sharp files, and small tiles no longer download 2400px images.
+  - The Collection photo uses the 1200px version.
+  - Unused italic and weight font files and dead image code were removed.
+
+## Outstanding work
+
+- Real contact/booking delivery remains intentionally unconfigured at the owner's request.
+- Unverified carpets and curtains remain in collection-review until attribution is established.
+- Continue using approved imagery and preserve the demo's noindex/nofollow setting.

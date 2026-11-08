@@ -1,209 +1,97 @@
-# Design system and client decisions
+# Current design — 8 November 2026
 
-The client (a friend of the repo owner, who relays feedback) wants **simplicity and elegance**, easy browsing of
-each brand's products, and a landing page with a "wow" factor — achieved with restraint, not effects.
-Inspiration studied: Minotti, B&B Italia, Molteni&C (pale neutral background, short nav, full-bleed imagery,
-few large headings, consistent product imagery).
+## Intent
 
-## Tokens (`site/css/styles.css` `:root`)
+Sell the feeling of a luxurious, elegant home through large, clear room photography. This is an informational showroom website, not an online shop. Photographs carry the page; text is a single line where a paragraph would do. The appointment is the goal, but it is offered as a service, never pushed: no booking buttons in the hero, no pop-ups, drawers or sticky bars.
 
-| Token | Value | Use |
-|---|---|---|
-| `--paper` / `--paper-2` | `#f5f3ef` / `#ece8e1` | page / image placeholder backgrounds |
-| `--ink` / `--ink-2` / `--mute` | `#171615` / `#4b4742` / `#8c867d` | text |
-| `--accent` | `#b9532a` | tiny details only (form errors); derived from TAF logo orange `#ec6c34` |
-| `--serif` | Noto Serif Display | headings, brand & product names, hero title |
-| `--sans` | Manrope (400/500/600) | body, labels, buttons, nav |
-| `--max` / `--pad` | 1440px / clamp(20px, 5vw, 72px) | content width / side gutter |
+The direction follows a review of Minotti, B&B Italia, Poliform, Molteni&C, Flexform, Baxter, Aman, Hermès, Bottega Veneta, Cartier and an official Rolex retailer (8 Nov 2026). The furniture houses keep stores and contact as quiet header/footer links. B&B Italia places a single "Book an appointment" invitation near the end of the homepage. Cartier offers it on each boutique page beside the opening hours. Rolex retailers use a calm dedicated page with a few short steps.
 
-Both fonts cover Latin, Greek and Cyrillic (checked via Google Fonts subsets). Noto Serif Display is loaded as a
-**variable range 200..500** so in-between weights work.
+## Typography and spacing
 
-## Pages
+Noto Serif Display, weight 300–330, is used for headings, brand names and product titles. Manrope serves body text, navigation, labels and links. Both support Latin, Greek and Cyrillic. Preserve the font loading in index.html.
 
-| Route | Content |
-|---|---|
-| `#/` | Hero slideshow (brand covers) → statement → brand index with hover preview (`feature` images, never the same as the slideshow) + "Also in our showrooms" → **Selected pieces** (manual carousel) → inspiration teaser (3 projects, first wide) → appointment band → showrooms strip |
-| `#/brands` | Large tiles per featured brand + list of other brands |
-| `#/brand/<id>` | Hero (cover) → intro → sticky category tabs → 4:3 product grid → appointment band → "Next brand" |
-| `#/inspiration` | Tiles per project (first wide), title + photo count |
-| `#/inspiration/<slug>` | Hero (project cover) → translated project description and linked collaboration credit where present → masonry gallery (natural aspect ratios) → appointment band → "Next project" |
-| `#/showrooms` | Four cities: addresses, phones, Natuzzi store, Google opening hours with live open/closed status, directions |
-| `#/story` | Company introduction from Who we are, followed by seven dated archive photographs from Our History; photographs are displayed without enlargement |
-| Product viewer | Dialog: one photo (left) + name, Brand, Category, **Book an appointment**, **Visit website** (right); arrows/swipe/keys step through the cards currently on screen. Nothing else, by design. |
-| Photo viewer | Same dialog in `.photo` mode for inspiration: full photo (contain) on near-black, arrows, counter |
-| Booking | Side sheet: showroom, interest, date (Sundays/closed days blocked), time slots from real hours, name, phone… **demo only** |
+The type system is small:
 
-## Landing hero (most-iterated part — current spec)
+- one display size for page titles;
+- one section-title size;
+- serif card titles;
+- body text at 16px;
+- quiet uppercase labels at 10.5–11.5px with wide tracking.
 
-- Title: `Furnishing homes` / `since 1965.` (translated; no eyebrow line, no subtitle — both removed on request).
-- Font: **Noto Serif Display, weight 330**, `clamp(38px, 4.2vw, 72px)`, letter-spacing −0.02em; both lines same
-  colour/weight, flush left (no italic, no indent). Mobile: `clamp(32px, 8.2vw, 40px)`, line-height 1.12.
-- Each line retains its `.line-mask` wrapper, with no entrance animation on the home page. Wrappers have
-  `padding-bottom: .44em; margin-bottom: -.28em` so descenders (g, ς, д) are **not clipped** while line spacing
-  stays 1.18em. If you change font/size, re-measure (see AGENTS.md → Verifying).
-- Layout: message block vertically centred between header and a bottom bar, on the same left edge as the logo.
-  Bottom bar (`.hero-bar`, 84px / 64px mobile): brand name + country·year (links to brand) on the left, `01 / 05`
-  counter + progress lines on the right (phones: name + counter only).
-- CTAs: compact 46px outline button "Explore the brands", secondary text link "Book an appointment". Header keeps its own
-  "Contact us" control (top-right, aligned to the content edge), with booking and contact choices.
-- Images: brand `cover.jpg` files (hand-picked, 1920–2400 px), **no zoom/Ken Burns**, cross-fade **0.9s**, 7s per slide.
-- Scrim (`.hero::after`): flat 24% + left-to-right 60%→36%→6%→0 + top/bottom bands. Measured WCAG contrast of
-  white title over every slide: median 6.4–16:1, brightest 10% of pixels ≥ 3.0:1 (large-text minimum).
+Calls to action are underlined uppercase text links with an arrow; filled buttons appear only on form submits. The muted grey (#6f6a62) meets AA contrast on paper at caption sizes.
 
-## Imagery rules
+Headings stay restrained: the hero title is at most 80px. The client earlier found a larger, heavier hero title "too heavy/big".
 
-- Room-set photography only; **one photo per product**, landscape, shown cropped 4:3 on cards and uncropped (cover-fit)
-  in the viewer. Inspiration galleries may mix landscape and portrait room shots.
-- No studio cut-outs, no close-ups, no bathrooms/corridors/details, no brand logos (inconsistent JPG/PNG styles) —
-  brand names are typeset in the serif.
-- Each featured brand has `cover.jpg` (slideshow + brand hero) and `feature.jpg` (home brand index) — different photos.
+Warm paper backgrounds, dark ink text and a sparing orange accent (form errors only) come from the CSS tokens. Content width is capped at 1440px with responsive 20–72px gutters. Sections breathe at 72–144px; compact ones at 48–96px.
 
-The landing slideshow opens with Natuzzi Italia's Borghese room photograph.
-Home section titles, brand names, statement and appointment-band heading use a smaller, quieter type scale.
-These refinements are scoped to the home content; the header and footer retain their existing styling.
+## Homepage
 
-## Inspiration project details
+Every homepage section is separated by the same visible gap, `--home-space` (88px on phones up to 176px on wide screens; slightly larger than the site-wide `--space` after the owner found 144px a little tight). Sections pad only their top, and the one before a full-bleed photo also pads its bottom. Small optical corrections cancel text line-spacing so the gaps look equal. The brand-names row under the Our Brands photo is part of that block.
 
-Each project has a hand-maintained `project.json` alongside its photos, containing source-based descriptive
-copy in English, Greek and Russian, plus its source URL. Descriptions sit above the gallery in a simple two-column
-layout on desktop and a single column on mobile. Serene Apartment, Seaside Dwelling and Golden Glow Nest credit
-Christia Angelidou Architects and link to `https://angelidouarchitects.com/`, as their original descriptions do.
+1. **Hero.** Fullscreen (100svh): Borghese/Natuzzi Italia first, followed by the curated brand slides. The title is "Furnishing homes since 1965." with one quiet link, "Explore the brands". A thin bottom bar holds the current brand name and slide lines. There is no appointment call to action here.
+2. **Header.** Transparent over the hero and solid on scroll. Nav: **Collection** · Inspiration · Showrooms · Our Story, then a visible language switch and two plain links, "Book an appointment" and "Contact us". Collection opens a full-width panel below the header whose content starts directly beneath the Collection button: Our Brands first (All brands plus each brand with a gallery), then Products (All products plus each category), each list running down two columns, and a brand photograph captioned "New in <brand>" linking to that brand. The photo is cropped to fill the space up to the right edge of "Contact us" and ends level with the last list item, with extra space between the lists and the photo. The photo is chosen at random each time the panel opens and changes every 4.5 seconds while it stays open (it does not change when reduced motion is on). The header turns solid while it is open. Below 1360px the menu button takes over, there is no Collection panel, and the menu lists Our Brands, Products, Inspiration, Showrooms and Our Story, then "Book an appointment" and "Contact us".
+3. **Story statement.** Centred: "Three generations. One belief: a beautiful home begins with you." Below it, three scroll-triggered counters (years since 1965, brands, showrooms) and an Our Story link.
+4. **Our Brands.** A full-bleed photograph, up to full viewport height, with the selected brand name overlaid large. Brand names along the bottom select it on hover or click, with a gentle cross-fade. On phones the photograph sits above and names sit below in two columns, never overlaid. Brands without approved high-resolution photos remain external links beneath.
+5. **Selected pieces.** Heading row: title, then the counter and arrows just after it, and "All products" at the far right, all aligned to the optical middle of the lowercase serif title. 12 random room images per document load from the curated Selected pieces list, excluding other homepage photography. Two large 3:2 cards per view on desktop. Desktop arrows; smaller screens swipe with the next card peeking. No automatic changes.
+6. **Inspiration.** Three projects in source order: the first wide (21:9), then two side by side.
+7. **Showrooms.** Four cities with address, phone and opening status.
+8. **Invitation.** The last section before the footer. A full-width photograph at its natural 16:9 ratio, with "Experience it in person." overlaid, one sentence, and a "Book an appointment" link to the appointment page. On phones the copy sits below the photograph.
+9. **Footer.** Dark footer with tagline, brand links to external websites, showrooms, site links (including the appointment page) and social links.
 
-## Booking controls
+## Appointment page (#/appointment)
 
-The interest field opens a styled, scrollable brand list with a marked selection. The entire date field opens
-a matching calendar panel, with translated month/day labels, month navigation and selectable showroom days from
-tomorrow through 90 days ahead. Closed days are disabled. Both controls support keyboard use; Escape closes the
-open picker before closing the booking sheet. The form remains a demo and sends nothing.
+The appointment is a calm page of its own, reached only when the visitor chooses it. Links carry context through the query string: `store`, `interest` and `piece` (for example from a product viewer or a showroom).
 
-## Motion (kept deliberately small)
+- **Desktop layout:** a large photograph sits sticky on the left. When the visitor came from a brand, it shows that brand's feature photograph. On the right: the label "Book an appointment", the title "A visit, at your pace.", a two-sentence invitation, then the request in three numbered parts.
+  1. **Where:** showroom and interest.
+  2. **When:** custom calendar and time.
+  3. **About you:** name, phone, optional email and notes.
+- **Tablet and phone layout:** the page stacks with the photograph on top.
+- **Alternative:** below the form, the showroom phone numbers offer "Or simply call us".
+- **Confirmation:** a quiet thank-you replaces the form in place.
+- **Demo only:** the form never sends anything.
 
-The landing title, buttons, caption and images appear immediately, without entrance fades or slide-ups. The home
-brand-name strip has been removed. Keep the hero photograph cross-fade and hover feedback. While scrolling away from
-the landing, only the hero photograph moves at a slower rate (60% scroll offset, no zoom); the text and all
-following sections scroll normally. Other pages retain their brief title entrance. Route changes are immediate.
-Selected pieces use a stable brand-interleaved order with no automatic changes. Left/right arrows page through
-four products on desktop, two on tablet and one on mobile; touch scrolling and keyboard navigation are supported.
-All disabled under `prefers-reduced-motion`.
+## Other pages
 
-## Header contact and company story
+- **Brand pages** (the introduction is the full brand description from brand.json `intro`; the short `speciality` tag is only a fallback)
+  - Full-height hero photograph with the brand name.
+  - One centred serif sentence about the brand and an official-website link.
+  - A sticky category filter that stays within the gallery.
+  - The gallery runs in a steady rhythm: one wide 16:9 photograph, then two pairs of 3:2. On phones all photographs are 3:2.
+  - Ends with an invitation for that brand and a large "Next brand" link.
+- **Products (#/products):** title and one line, then every published piece in source brand order. Wide screens put a sticky left sidebar with Category and Brand lists. Each list is ordered by number of pieces and shows the top six plus "Show N more"; the chosen option stays visible, counts follow the other filter, empty combinations are disabled, and the sidebar has no scrollbar of its own: when it is taller than the screen it scrolls with the page until its last option is visible, then holds there. This sits beside three columns of 3:2 cards showing name and "brand · category". Tablets and phones put the filters above the grid as two horizontally scrolling chip rows (empty options hidden), with two columns of cards on tablets and one on phones. The page ends with the appointment invitation.
+- **Brands index:** two columns of 3:2 covers, then external links for link-only brands. Neither brand pages nor the index use pagination.
+- **Inspiration index:** every source project with at least three high-resolution photographs (20 of 22), in source order.
+  - **Featured project:** the first project fills the screen, with its title, architect credit, photo count and "View the project". One centred serif line follows.
+  - **Mosaic:** the rest form an editorial mosaic of repeating blocks (big + tall, three equal, two wide, tall + big), so every row is full and there are never gaps. Tablets and phones use full- and half-width tiles. Titles sit on the photographs.
+  - **Hover preview:** on desktop only, resting the mouse on a tile fades through up to three more of its photos, which load on first hover.
+- **Inspiration projects:** title, then the always-visible project story (architect credit with link and photo count on the left, the full translated description on the right; stacked on phones), then a large photograph stage (up to 78vh) with thumbnails, "Brands in this project" (only brands named in the project's own description: brands with pages as photo cards, link-only brands as external links), an invitation and a "Next project" link.
+- **Our Story:** company introduction and history. Seven archive tabs show taller images (480px desktop, 320px mobile), cover fit with center-top positioning. No enlarger and no appointment section on this page.
+- **Showrooms:** addresses, telephone numbers, hours and related Natuzzi details. Each showroom offers "Book an appointment", which preselects that showroom, and directions.
+- **Contact (#/contact):** a page of its own, never a drawer or pop-up. Title and one-line introduction across the top; beneath them, email, head-office phone, showroom phones and "Book an appointment" on the left and the message form on the right, starting at the same height (stacked on phones). Demo-only.
+- **Viewers:** the product viewer and the project photo viewer share light navigation buttons with dark arrows, visible on any photograph.
+- **Product viewer:** stays minimal: photograph, title, brand and category, "Book an appointment" (to the appointment page with brand and piece prefilled) and "Official website". Never add speculative specifications or descriptions.
 
-The desktop Contact us control has its label in the HTML and a width fitted to its text, with all button transitions
-disabled. It opens booking and contact choices on mouse hover or click. At 1280px and below it is hidden; the
-mobile menu lists Book an appointment and Contact us as two individual actions. There is no contact icon.
-Escape and outside clicks close the desktop dropdown.
+## Motion and interaction
 
-Contact opens the email address, then a themed name/subject/phone/email/message form, followed by the central
-phone and showroom numbers, a showroom link and a booking option. The form validates locally and explicitly
-sends nothing, as requested; it has no email-service or backend integration. Booking remains a demo too.
+- **Hero zoom:** the hero background zooms from 1 to 1.09 over 14 seconds. Each slide stays visible for seven seconds before a 1.2-second cross-fade.
+- **Hero transitions:** the outgoing transform is preserved during transitions to avoid snapping, and the next slide is preloaded. Hero text appears in a restrained sequence.
+- **Brand heroes:** the same slow zoom.
+- **Scroll reveals:** below-fold content uses a 0.9-second fade with a 14px rise; avoid nested reveals. Already-visible content must not disappear on navigation or Back restoration.
+- **Counters:** story counters start when scrolled into view.
+- **Clickable photographs:** a slow, slight zoom on hover and keyboard focus. Decorative and archive images do not imply clickability.
+- **Reduced motion:** reduced-motion preferences disable all animation.
+- **Navigation:** the logo on home scrolls to the top. Browser Back/Forward restores position, including the brand selection and carousel position.
 
-Our Story adapts the company overview from https://taf.com.cy/who-we-are and the dated archive from
-https://taf.com.cy/our-history. The seven historical photographs live in content/history with multilingual
-periods and captions, and are shown uncropped without enlargement. These archival family/event photographs
-are the explicit exception to the usual room-set imagery rule.
+## Images and performance
 
-## Alignment and navigation
+- **Sizes:** every photo lists all its generated sizes (`srcset`, using pixel widths the build records in `ws`), together with how wide it is shown (`sizes`). Phones download the small files and large screens get the sharp ones.
+- **Helpers:** in `app.js`, always use `photo(image, alt, sizes)` with one of the `SIZES` presets, never a bare `.lg` URL.
+- **Loading:** only the first hero slide, brand and inspiration heroes, and gallery stages load immediately; everything else loads lazily.
+- **Fonts:** only the weights in use are loaded (Manrope 400–600, Noto Serif Display 300–400, no italics).
 
-- The header stays fixed in both scroll directions. It has a solid pale background after the first 64px of
-  scrolling, including over hero photographs; pages without a hero start with that background. The scrolled
-  header fades to opaque over 0.35 seconds, without a glass/blur effect. Sticky brand filters remain immediately below it.
-- Section spacing uses shared `--section-space` and `--section-space-tight` tokens. The introductory paragraph is
-  centred, and card captions consistently put the smaller brand/category line below the product name.
-- Page headings can shrink within flex layouts; long translated headings fit mobile screens. The footer groups
-  all brand names into two compact columns immediately to the left of Showrooms on desktop; they stack above
-  Showrooms on smaller screens.
-- Mobile booking and product dialogs fit the available page width, including the reserved scrollbar gutter.
-  Booking content uses the same mobile side padding as the page, with a two-column showroom chooser.
+## Quality checks
 
-## Copy & tone
-
-- About TAF: a Cypriot family business since 1965 ("Furnishing homes since 1965", "Three generations").
-- Brands described by **country** ("Italy · 1970", "Denmark · 1987"), not Italian regions.
-- Navigation: Brands · Showrooms · Our Story · [EN | ΕΛ | РУ] · Book an appointment.
-- Footer (black): logo, a compact two-column brand list, showrooms, TAF navigation and social in one row. All brands
-  with a website link directly to it in a new tab, including brands that have internal product pages. Inside by
-  TAF stays as plain text because no separate website is listed. Country labels and the separate large brand
-  block are omitted to keep the footer compact.
-
-## Rejected options (don't reintroduce without asking)
-
-| Rejected | Why |
-|---|---|
-| "L'arte di abitare" tagline | real company name; too Italian-centric |
-| Heavy "Italian design" copy, "The Houses" naming | not all brands Italian; renamed "Brands" |
-| Manrope (sans) hero title | client preferred the serif after a 6-font comparison |
-| Noto Serif Display 400, 116px | "too bold, heavy and big, takes away elegance" |
-| Italic indented "since 1965." | client wanted same colour/weight, flush left |
-| Ken Burns zoom on hero images | client asked for no zoom until images change |
-| 2.2s cross-fade | "make transitions shorter" → 0.9s |
-| Eyebrow line + subtitle in hero, scroll-cue line | client struck them out |
-| Hiding header CTA on the landing | broke right alignment of the language switch |
-| Mixed cut-out + room photos, brand logos, 400-product collection page | looked "assembled from many places" |
-| Multi-photo product galleries, descriptions, designers, dimensions | client: one photo per product, "keep things at minimum" (details not available for all products) |
-| Partner-site scraping / sync | removed by the client — content is added manually (see docs/history.md) |
-
-The footer TAF column contains only Inspiration and Our Story. Email and the central phone remain in Contact us.
-
-The product carousel uses the single heading Selected pieces (translated), without a repeated eyebrow or the former Cypriot homes phrase.
-
-## Expanded brand catalogue — 8 November 2026
-
-The owner requested the full TAF collection galleries. Fifteen brands now have product pages; Guerra Vanni
-remains in the supplementary list because these galleries contain no attributed products for it. New brand
-cover and feature images are selected from their imported photographs; existing pairs and the five-slide
-landing sequence are preserved. Home and Brands automatically list every populated brand.
-
-Only the home Makers we represent names were reduced to `clamp(26px, 2.6vw, 40px)`. Other brand titles,
-footer links keep their existing type scales. Brand/category/name together
-identify a product, so shared model names in different categories open the correct photograph.
-
-The full collection import explicitly includes studio, portrait and lower-resolution product images from TAF.
-Use room photographs for brand previews where available; Magniflex and Olivo & Groppo use the supplied
-product photography. The original room-only rule still applies when choosing future editorial/landing imagery.
-
-## Image quality review — 8 November 2026
-
-Following the full collection import, the owner requested removal of low-quality images. A resolution and
-sharpness scan, followed by visual review of borderline files, excluded 159 product images and nine
-undersized cover/feature files. Active brand photos now have at least 1000 pixels on their longest edge;
-new editorial imagery should still aim for 1600px or more. Smooth materials were not automatically
-classified as blur. The catalogue now has 354 product photos across 14 brands with pages.
-
-Cane-line, Connubia, Inside and Orme use clearer replacement cover/feature photos where needed.
-Olivo & Groppo has no qualifying product photos, so it returns to the supplementary brand list and footer.
-Inspiration photographs and the historical archive retain their original images.
-
-Excluded originals are stored outside the active brand folders in `content/quality-excluded/` and are not
-published or read by the build. `content/imports/quality-review-2026-11-08.json` records each exclusion,
-its resolution and replacement previews. The collection import manifest was updated to follow relocated files.
-
-## Latest image and brand refinements — 8 November 2026
-
-The owner clarified that only genuinely blurry images should be excluded. The earlier fixed 1000px cutoff
-was too strict: 147 clear smaller photographs have been restored, leaving 501 product photos across 15
-brands with pages. Twelve visibly soft room/detail thumbnails remain outside the active folders. Keep
-the clearer replacement previews; Olivo & Groppo has returned to the main brand list with its seating.
-
-The scrolling brand-name strip is removed entirely. Makers follows the introductory statement with one
-shared section gap; Selected pieces retains its manual product carousel. New brand biographies are
-translated into English, Greek and Russian. Verified years populate the existing origin/year labels on
-brand pages and in Makers, matching the established layout. Source links are in brand.json and
-`docs/brand-sources.md`. Inside has a description but no invented founding year; the owner does not know
-its launch date. Mistral is corrected to Italy (1987), and Connubia to its 2016 brand launch.
-
-The home brand section and Brands page now use the single title Our Brands (translated), without a
-repeated eyebrow. The supplementary showroom label and brand list align at the top, with no top padding
-on the first list item.
-
-## Product title cleanup — 8 November 2026
-
-All 159 code/placeholder/raw-filename titles now have readable display names. Another 63 photo suffixes,
-capitalisation issues and clear typos were cleaned up. Identifiable model/collection names are retained;
-uncertain images use brand + a visually appropriate furniture/object type. Generic names are translated
-into English, Greek and Russian in per-brand names.json files. No model identities are invented.
-
-The build validates and includes these translated titles. Every user-facing product-name surface uses
-the same title, while the original category/name identity remains internal. This preserves image, viewer
-navigation and link matching when several photos share a generic or collection title. Product count and
-images are unchanged. The minimal viewer layout is unchanged.
+- **Coverage:** check desktop, tablet and phone widths, all three languages, long names, cropping, keyboard focus, reduced motion, scrolling and Back/Forward.
+- **Layout:** no horizontal page overflow.
+- **Image quality:** the criterion is actual visible clarity, not file size alone. Historical and complete project galleries are deliberate exceptions to room-only brand imagery.
