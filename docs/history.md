@@ -215,6 +215,7 @@ Client: "Use only high resolution images. That Cane-line one looks bad in full s
 - Restricted product-filter hover feedback to mouse pointers and unselected options. A sticky touch hover had overridden selected chips' light text, making them appear solid black until tapping elsewhere.
 - Image viewers and their backdrops now use the site's warm paper colour. Desktop counters use dark text on light badges and navigation buttons have subtle outlines; the mobile product viewer retains its layout and compact counter.
 - Product viewers now stack the natural-proportion photograph above the details on desktop too, following the approved mobile layout. Inspiration viewers keep their existing layout.
+- On larger screens, product-viewer appointment and official-website links sit to the right of brand and category, aligned with those two rows. Mobile links remain below the details.
 
 ## Outstanding work
 
