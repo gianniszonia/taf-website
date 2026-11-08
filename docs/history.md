@@ -207,6 +207,15 @@ Client: "Use only high resolution images. That Cane-line one looks bad in full s
   - The Collection photo uses the 1200px version.
   - Unused italic and weight font files and dead image code were removed.
 
+### Mobile homepage and simpler forms
+
+- Matched homepage Inspiration photographs to Selected pieces at 3:2 on phones; all project captions now use the same title size with photo counts underneath.
+- Moved the Inspiration reveal to its row. Translating individual cards had created vertical overflow inside the horizontal carousel, catching page scrolling over its images.
+- Removed decorative separators between appointment steps, contact methods and showroom phone rows, plus the contact phone-prefix divider. Field underlines and control outlines remain.
+- Restricted product-filter hover feedback to mouse pointers and unselected options. A sticky touch hover had overridden selected chips' light text, making them appear solid black until tapping elsewhere.
+- Image viewers and their backdrops now use the site's warm paper colour. Desktop counters use dark text on light badges and navigation buttons have subtle outlines; the mobile product viewer retains its layout and compact counter.
+- Product viewers now stack the natural-proportion photograph above the details on desktop too, following the approved mobile layout. Inspiration viewers keep their existing layout.
+
 ## Outstanding work
 
 - Real contact/booking delivery remains intentionally unconfigured at the owner's request.

@@ -472,7 +472,8 @@
   function revealSections() {
     sectionObserver?.disconnect();
     if (reduced) return;
-    const selector = '.products-grid .card, .product-filters, .statement, .head, .section-more, .brands-track, .brands-overlay .wrap, .insp-intro .wrap, .mosaic-tile, .project-brands .wrap, .brands-after, .picks, .house-tile, .invite-copy .wrap, .history-card, .store-full, .stores, .b-intro, .grid .card, .project-gallery, .story-intro, .next-link .wrap, .appointment-body';
+    // Reveal the homepage Inspiration track as a unit: translated cards overflow its mobile scroll container vertically.
+    const selector = '.products-grid .card, .product-filters, .statement, .head, .section-more, .brands-track, .brands-overlay .wrap, .insp-intro .wrap, .mosaic-tile, .project-brands .wrap, .brands-after, .picks, #inspTrack, .house-tile, .invite-copy .wrap, .history-card, .store-full, .stores, .b-intro, .grid .card, .project-gallery, .story-intro, .next-link .wrap, .appointment-body';
     const elements = $$(selector, main).filter(el => !el.parentElement.closest(selector));
     // Already-visible content stays visible, including when restoring browser history.
     const pending = elements.filter(el => {

@@ -33,7 +33,7 @@ Every homepage section is separated by the same visible gap, `--home-space` (88p
 3. **Story statement.** Centred: "Three generations. One belief: a beautiful home begins with you." Below it, three scroll-triggered counters (years since 1965, brands, showrooms) and an Our Story link.
 4. **Our Brands.** A full-bleed photograph, up to full viewport height, with the selected brand name overlaid large. Brand names along the bottom select it on hover or click, with a gentle cross-fade. On phones (below 760px) the section becomes a swipe carousel instead: the title "Our Brands" with a "1 / 9" counter, then one large 4:5 brand photograph per card with the brand name and origin over it, the next card peeking in; each card opens that brand. No list of names. Brands without approved high-resolution photos remain external links beneath.
 5. **Selected pieces.** Heading row: title on the left, counter and arrows at the top right (aligned to the optical middle of the lowercase serif title). "All products" follows the carousel, on the left. 12 random room images per document load from the curated Selected pieces list, excluding other homepage photography. Two large 3:2 cards per view on desktop. Desktop arrows; smaller screens swipe with the next card peeking. No automatic changes.
-6. **Inspiration.** Three projects in source order: the first wide (21:9), then two side by side. On phones: a swipe row of 4:5 project cards with a "1 / 3" counter.
+6. **Inspiration.** Three projects in source order: the first wide (21:9), then two side by side. On phones: a swipe row of 3:2 project photographs matching Selected pieces, with uniform stacked captions and a "1 / 3" counter. The row reveals as a whole so animated cards do not create inner vertical scrolling.
 7. **Showrooms.** Four cities with address, phone and opening status. On phones: a swipe row of showroom cards with a "1 / 4" counter.
 8. **Invitation.** The last section before the footer. A full-width photograph at its natural 16:9 ratio, with "Experience it in person." overlaid, one sentence, and a "Book an appointment" link to the appointment page. On phones the copy sits below the photograph.
 9. **Footer.** Dark footer with tagline, brand links to external websites, showrooms, site links (including the appointment page) and social links.
@@ -50,6 +50,7 @@ The appointment is a calm page of its own, reached only when the visitor chooses
 - **Alternative:** below the form, the showroom phone numbers offer "Or simply call us".
 - **Confirmation:** a quiet thank-you replaces the form in place.
 - **Demo only:** the form never sends anything.
+- **Dividers:** spacing separates the numbered parts; field underlines and control outlines remain.
 
 ## Other pages
 
@@ -69,8 +70,8 @@ The appointment is a calm page of its own, reached only when the visitor chooses
 - **Our Story:** company introduction and history. Seven archive tabs show taller images (480px desktop, 320px mobile), cover fit with center-top positioning. No enlarger and no appointment section on this page.
 - **Showrooms:** addresses, telephone numbers, hours and related Natuzzi details. Each showroom offers "Book an appointment", which preselects that showroom, and directions.
 - **Contact (#/contact):** a page of its own, never a drawer or pop-up. Title and one-line introduction across the top; beneath them, email, head-office phone, showroom phones and "Book an appointment" on the left and the message form on the right under a small heading "Or send us a message", starting at the same height (stacked on phones). Demo-only.
-- **Viewers:** the product viewer and the project photo viewer share light navigation buttons with dark arrows on wide screens. Below 860px there are no arrow buttons: visitors swipe left/right anywhere in the viewer (photo, text or buttons; mostly vertical drags are ignored), a small "3 / 56" pill sits on the photo, and the product photo starts below the close button at its natural proportions (no dark bars).
-- **Product viewer:** stays minimal: photograph, title, brand and category, "Book an appointment" (to the appointment page with brand and piece prefilled) and "Official website". Never add speculative specifications or descriptions.
+- **Viewers:** the product viewer and the project photo viewer use warm paper backgrounds and backdrops, matching the site. They share light outlined navigation buttons with dark arrows and a dark-on-light counter on wide screens. Below 860px there are no arrow buttons: visitors swipe left/right anywhere in the viewer (photo, text or buttons; mostly vertical drags are ignored), a small "3 / 56" pill sits on the photo, and the product photo starts below the close button at its natural proportions (no dark bars).
+- **Product viewer:** image above details at every width, scrolling as one surface. Desktop photographs retain their natural proportions in a centred frame up to 1000px wide; details follow directly below. Stays minimal: photograph, title, brand and category, "Book an appointment" (to the appointment page with brand and piece prefilled) and "Official website". Never add speculative specifications or descriptions.
 
 ## Motion and interaction
 
